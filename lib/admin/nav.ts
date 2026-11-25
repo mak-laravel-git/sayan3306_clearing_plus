@@ -109,10 +109,14 @@ const rawAdminNav: ToggleableNavGroup[] = [
 function stripDisabled(items: ToggleableNavItem[]): NavItem[] {
   return items
     .filter((item) => item.enabled !== false)
-    .map(({ enabled: _enabled, children, ...rest }) => ({
-      ...rest,
-      ...(children ? { children: stripDisabled(children) } : {}),
-    }));
+    .map(({ enabled, children, ...rest }) => {
+      void enabled;
+
+      return {
+        ...rest,
+        ...(children ? { children: stripDisabled(children) } : {}),
+      };
+    });
 }
 
 export const adminNav: NavGroup[] = rawAdminNav.map((group) => ({

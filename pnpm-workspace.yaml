@@ -10,3 +10,6 @@ minimumReleaseAgeExclude:
   - '@videojs/spf@10.1.0'
   - '@videojs/store@10.1.0'
   - '@videojs/utils@10.1.0'
+overrides:
+  follow-redirects: 1.16.2
+  fast-uri: 3.1.9

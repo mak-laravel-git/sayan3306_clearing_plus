@@ -85,6 +85,8 @@ function InlineFile({
         aria-label={onPreview ? `Preview ${name}` : undefined}
         className="relative size-10 shrink-0 overflow-hidden rounded-md bg-muted"
       >
+        {/* Object-URL and in-memory previews. next/image does not accept them. */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={preview} alt="" className="size-full object-contain" />
       </button>
       <div className="min-w-0 flex-1">

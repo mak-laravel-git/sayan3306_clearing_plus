@@ -167,7 +167,11 @@ async function emit(target, content) {
   if (checkOnly) {
     let current = ""
     try { current = await readFile(target, "utf8") } catch {}
-    if (current !== content) throw new Error(`${path.relative(root, target)} is stale; run pnpm svg:generate`)
+    // Git on Windows checks generated files out as CRLF. Compare logical
+    // newlines so `svg:check` matches Linux CI without rewriting the tree.
+    if (current.replace(/\r\n/g, "\n") !== content.replace(/\r\n/g, "\n")) {
+      throw new Error(`${path.relative(root, target)} is stale; run pnpm svg:generate`)
+    }
     return
   }
   await writeFile(target, content)
