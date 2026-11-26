@@ -2,9 +2,22 @@
 
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
+import { Fragment, type ReactNode } from "react";
 
 import { ADMIN_SITE_PARAM, isSiteScopedPage, validSiteKey, type AdminSite } from "@/lib/admin/site-keys";
 import { cn } from "@/lib/utils";
+
+/**
+ * The settings forms keep what the admin typed in their own state, so when the
+ * site in the URL changes they must start over with the new site's data. Keying
+ * the page by the site makes React build the forms again (a plain re-render
+ * would keep the old site's values on screen until a reload).
+ */
+export function SiteKeyed({ children }: { children: ReactNode }) {
+  const site = validSiteKey(useSearchParams().get(ADMIN_SITE_PARAM)) ?? "default";
+
+  return <Fragment key={site}>{children}</Fragment>;
+}
 
 function hostOf(origin: string | null): string {
   if (!origin) return "";
