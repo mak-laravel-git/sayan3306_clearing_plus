@@ -1,6 +1,7 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
+import { scopeToSite } from "@/lib/admin/site";
 import { getSession } from "@/lib/auth/auth-cookies";
 import { laravelHttp } from "@/lib/auth/http";
 import { logoutUrl } from "@/lib/auth/session-expired";
@@ -24,7 +25,7 @@ export async function GET(request: NextRequest, ctx: RouteContext<"/api/admin/se
 
   let upstream;
   try {
-    upstream = await laravelHttp.get<string>(`/admin/seo/files/${file}/download`, {
+    upstream = await laravelHttp.get<string>(await scopeToSite(`/admin/seo/files/${file}/download`), {
       headers: { Authorization: `Bearer ${session.accessToken}`, Accept: "*/*" },
       responseType: "text",
       timeout: 30_000,

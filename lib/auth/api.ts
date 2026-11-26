@@ -1,6 +1,7 @@
 import "server-only";
 
 import { redirect } from "next/navigation";
+import { scopeToSite } from "@/lib/admin/site";
 import { getSession } from "@/lib/auth/auth-cookies";
 import { ApiError } from "@/lib/auth/api-error";
 import { laravelHttp, toApiError, unwrapOrThrow } from "@/lib/auth/http";
@@ -61,13 +62,15 @@ export async function authedRequest<T>(
     endSession(onSessionExpired);
   }
 
+  const url = await scopeToSite(path);
+
   const send = (accessToken: string) => {
     const isFormData =
       typeof FormData !== "undefined" && body instanceof FormData;
 
     return laravelHttp.request({
       method,
-      url: path,
+      url,
       data: body,
       headers: { Authorization: `Bearer ${accessToken}` },
       // Let axios set multipart boundary for FormData; JSON stays default.
