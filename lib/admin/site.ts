@@ -1,30 +1,21 @@
 import "server-only";
 
-import { cookies } from "next/headers";
+import { headers } from "next/headers";
 
-/**
- * The site whose settings the admin is editing. Chosen with the switcher and
- * kept in a cookie. It only picks which `/admin/sites/{site}/...` route the
- * BFF calls; the API decides on every request whether this admin may touch
- * that site, so the cookie grants nothing by itself.
- */
-export const ADMIN_SITE_COOKIE = "admin_site";
+import { ADMIN_SITE_HEADER, validSiteKey } from "@/lib/admin/site-keys";
 
-const SITE_KEY = /^[a-z0-9_-]{1,20}$/;
-
-export type AdminSite = {
-  key: string;
-  name: string;
-  origin: string | null;
-  control: boolean;
-};
+export { ADMIN_SITE_COOKIE, type AdminSite } from "@/lib/admin/site-keys";
 
 /** Per-site admin endpoints; everything else (backups, audit, users) is shared. */
 const SITE_SCOPED = /^\/admin\/(settings|seo)(\/|\?|$)/;
 
+/**
+ * The site named in the page URL, as the proxy passed it on. It only picks
+ * which `/admin/sites/{site}/...` route the BFF calls; the API decides on every
+ * request whether this admin may touch that site.
+ */
 export async function selectedSiteKey(): Promise<string | null> {
-  const value = (await cookies()).get(ADMIN_SITE_COOKIE)?.value;
-  return value && SITE_KEY.test(value) ? value : null;
+  return validSiteKey((await headers()).get(ADMIN_SITE_HEADER));
 }
 
 /**
@@ -32,9 +23,9 @@ export async function selectedSiteKey(): Promise<string | null> {
  * selected. Without a chosen site the plain route runs for the site the
  * admin signed in on.
  */
-export async function scopeToSite(path: string): Promise<string> {
+export async function scopeToSite(path: string, site?: string | null): Promise<string> {
   if (!SITE_SCOPED.test(path)) return path;
 
-  const site = await selectedSiteKey();
-  return site ? path.replace(/^\/admin\//, `/admin/sites/${site}/`) : path;
+  const key = site === undefined ? await selectedSiteKey() : validSiteKey(site);
+  return key ? path.replace(/^\/admin\//, `/admin/sites/${key}/`) : path;
 }

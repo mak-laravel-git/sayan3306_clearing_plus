@@ -25,7 +25,7 @@ export async function GET(request: NextRequest, ctx: RouteContext<"/api/admin/se
 
   let upstream;
   try {
-    upstream = await laravelHttp.get<string>(await scopeToSite(`/admin/seo/files/${file}/download`), {
+    upstream = await laravelHttp.get<string>(await scopeToSite(`/admin/seo/files/${file}/download`, request.nextUrl.searchParams.get("site")), {
       headers: { Authorization: `Bearer ${session.accessToken}`, Accept: "*/*" },
       responseType: "text",
       timeout: 30_000,

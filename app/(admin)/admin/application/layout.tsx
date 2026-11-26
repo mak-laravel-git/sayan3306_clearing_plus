@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import type { ReactNode } from "react";
 
-import { SiteBar } from "@/components/admin/application/site-bar";
+import { SiteTabs } from "@/components/admin/application/site-tabs";
 import { RouteReady } from "@/components/transitions/route-ready";
 import { currentAdminSite, getAdminSites } from "@/lib/admin/sites";
 import { getSession } from "@/lib/auth/auth-cookies";
@@ -21,7 +21,7 @@ export default async function ApplicationSettingsLayout({
   return (
     <div className="flex w-full flex-col gap-6">
       <RouteReady />
-      {current ? <SiteBar sites={sites} current={current} /> : null}
+      {current ? <SiteTabs sites={sites} fallback={current} /> : null}
       {children}
     </div>
   );

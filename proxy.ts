@@ -8,6 +8,13 @@ import {
 } from "@/lib/auth/session";
 import { SESSION_EXPIRED_REASON } from "@/lib/auth/session-expired";
 import { runWithFrontendOrigin } from "@/lib/auth/frontend-origin-store";
+import {
+  ADMIN_SITE_COOKIE,
+  ADMIN_SITE_HEADER,
+  ADMIN_SITE_PARAM,
+  isSiteScopedPage,
+  validSiteKey,
+} from "@/lib/admin/site-keys";
 import { BOT_UA, reportBotHit } from "@/lib/seo/bot-hit";
 
 /**
@@ -88,9 +95,40 @@ async function handleProxy(request: NextRequest) {
     return NextResponse.redirect(adminUrl);
   }
 
+  // Which site the application settings screens edit. Never trust an incoming header.
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.delete(ADMIN_SITE_HEADER);
+
+  let chosenSite: string | null = null;
+
+  if (isAdmin && isSiteScopedPage(pathname)) {
+    chosenSite = validSiteKey(request.nextUrl.searchParams.get(ADMIN_SITE_PARAM));
+
+    if (!chosenSite) {
+      // Make the site explicit in the URL: reopen the one used last time.
+      const remembered = validSiteKey(request.cookies.get(ADMIN_SITE_COOKIE)?.value);
+      if (remembered) {
+        const siteUrl = request.nextUrl.clone();
+        siteUrl.searchParams.set(ADMIN_SITE_PARAM, remembered);
+        return NextResponse.redirect(siteUrl);
+      }
+    } else {
+      requestHeaders.set(ADMIN_SITE_HEADER, chosenSite);
+    }
+  }
+
   const response = NextResponse.next({
-    request: { headers: new Headers(request.headers) },
+    request: { headers: requestHeaders },
   });
+  if (chosenSite) {
+    response.cookies.set(ADMIN_SITE_COOKIE, chosenSite, {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+      path: "/",
+      maxAge: 60 * 60 * 24 * 365,
+    });
+  }
   if (clearedSession) {
     response.cookies.delete(SESSION_COOKIE);
   }

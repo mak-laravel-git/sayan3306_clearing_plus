@@ -1,6 +1,7 @@
 "use client";
 
 import { Download, ExternalLink, FileCode2, RefreshCw } from "lucide-react";
+import { useSearchParams } from "next/navigation";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
 
@@ -28,6 +29,7 @@ export function SeoFilesCard({
 }) {
   const [busy, setBusy] = useState<SeoFileName | "all" | null>(null);
   const [pending, startTransition] = useTransition();
+  const site = useSearchParams().get("site");
 
   function regenerate(file: SeoFileName | "all") {
     setBusy(file);
@@ -99,7 +101,7 @@ export function SeoFilesCard({
                 Regenerate
               </Button>
               <Button asChild size="icon-sm" variant="ghost" aria-label={`Download ${file.name}`}>
-                <a href={`/api/admin/seo/download/${file.file}`} aria-disabled={!file.enabled}>
+                <a href={`/api/admin/seo/download/${file.file}${site ? `?site=${encodeURIComponent(site)}` : ""}`} aria-disabled={!file.enabled}>
                   <Download aria-hidden />
                 </a>
               </Button>

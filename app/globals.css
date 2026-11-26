@@ -227,37 +227,62 @@
   html {
     @apply font-sans;
     scrollbar-gutter: stable;
-    scrollbar-width: thin;
-    scrollbar-color: var(--cp-navy) var(--cp-paper);
   }
 
-  /* WebKit / Chromium — Clearing+ brand scrollbar */
+  /*
+   * One scrollbar for the whole app: marketing pages, the admin shell and every
+   * inner scroll area. The colors follow the theme, so the track never turns
+   * into a light strip on the dark admin and there are no arrow buttons.
+   */
+  :root {
+    --scrollbar-thumb: color-mix(in srgb, var(--cp-navy) 34%, transparent);
+    --scrollbar-thumb-hover: color-mix(in srgb, var(--cp-navy) 60%, transparent);
+  }
+
+  .dark {
+    --scrollbar-thumb: oklch(1 0 0 / 22%);
+    --scrollbar-thumb-hover: oklch(1 0 0 / 40%);
+  }
+
+  /* The marketing pages are always light, even when the app theme is dark. */
+  .cp-marketing {
+    --scrollbar-thumb: color-mix(in srgb, var(--cp-navy) 34%, transparent);
+    --scrollbar-thumb-hover: color-mix(in srgb, var(--cp-navy) 60%, transparent);
+  }
+
+  /* Firefox and current Chromium */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--scrollbar-thumb) transparent;
+  }
+
+  /* Older WebKit */
   *::-webkit-scrollbar {
     width: 10px;
     height: 10px;
   }
 
-  *::-webkit-scrollbar-track {
-    background: var(--cp-paper);
+  *::-webkit-scrollbar-track,
+  *::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+
+  *::-webkit-scrollbar-button {
+    display: none;
+    width: 0;
+    height: 0;
   }
 
   *::-webkit-scrollbar-thumb {
-    background: color-mix(in srgb, var(--cp-navy) 72%, var(--cp-steel));
-    border: 2px solid var(--cp-paper);
+    background: var(--scrollbar-thumb);
+    background-clip: padding-box;
+    border: 3px solid transparent;
     border-radius: 9999px;
   }
 
   *::-webkit-scrollbar-thumb:hover {
-    background: var(--cp-primary);
-  }
-
-  *::-webkit-scrollbar-corner {
-    background: var(--cp-paper);
-  }
-
-  .cp-marketing {
-    scrollbar-width: thin;
-    scrollbar-color: var(--cp-navy) var(--cp-paper);
+    background: var(--scrollbar-thumb-hover);
+    background-clip: padding-box;
   }
 }
 
