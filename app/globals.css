@@ -225,6 +225,33 @@
   html {
     @apply font-sans;
     scrollbar-gutter: stable;
+    scrollbar-width: thin;
+    scrollbar-color: var(--cp-navy) var(--cp-paper);
+  }
+
+  /* WebKit / Chromium — Clearing+ brand scrollbar */
+  *::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  *::-webkit-scrollbar-track {
+    background: var(--cp-paper);
+  }
+  *::-webkit-scrollbar-thumb {
+    background: color-mix(in srgb, var(--cp-navy) 72%, var(--cp-steel));
+    border: 2px solid var(--cp-paper);
+    border-radius: 9999px;
+  }
+  *::-webkit-scrollbar-thumb:hover {
+    background: var(--cp-primary);
+  }
+  *::-webkit-scrollbar-corner {
+    background: var(--cp-paper);
+  }
+
+  .cp-marketing {
+    scrollbar-width: thin;
+    scrollbar-color: var(--cp-navy) var(--cp-paper);
   }
 }
 
