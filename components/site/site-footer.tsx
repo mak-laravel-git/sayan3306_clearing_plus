@@ -16,7 +16,10 @@ export function SiteFooter({ brandName = "Clearing+" }: { brandName?: string }) 
     <footer className="cp-footer mt-16">
       <div className="mx-auto grid w-full max-w-7xl gap-10 px-4 py-14 md:px-6 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
         <div>
-          <p className="font-display text-lg font-semibold">{brandName}</p>
+          <p className="font-display text-lg font-semibold">
+            Clearing<span className="text-cp-primary">+</span>
+          </p>
+          <p className="mt-1 text-xs font-medium tracking-wide text-cp-steel">{site.tagline}</p>
           <p className="mt-3 max-w-sm text-sm leading-6 text-white/70">{site.summary}</p>
           <NewsletterJoin />
         </div>

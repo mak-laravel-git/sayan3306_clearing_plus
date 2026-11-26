@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Outfit, Source_Sans_3 } from "next/font/google";
+import { Inter, Manrope } from "next/font/google";
 import { AnimationProvider } from "@/components/animations/providers/animation-provider";
 import { AppToaster } from "@/components/app-toaster";
 import { SectionErrorBoundary } from "@/components/site/section-error-boundary";
@@ -11,12 +11,12 @@ import { fetchPageSeo } from "@/lib/seo/public";
 
 import "./globals.css";
 
-const sourceSans = Source_Sans_3({
+const inter = Inter({
   variable: "--font-sans",
   subsets: ["latin"],
 });
 
-const outfit = Outfit({
+const manrope = Manrope({
   variable: "--font-display",
   subsets: ["latin"],
 });
@@ -61,7 +61,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
     <html
       lang={home.identity.locale.replace("_", "-") || "en"}
       suppressHydrationWarning
-      className={`${sourceSans.variable} ${outfit.variable} h-full antialiased`}
+      className={`${inter.variable} ${manrope.variable} h-full antialiased`}
     >
       <body className="flex min-h-svh flex-col">
         <ThemeProvider

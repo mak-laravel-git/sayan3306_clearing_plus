@@ -15,6 +15,7 @@ export type NavItem = {
 export const site = {
   name: "Clearing+",
   role: "Football recruitment clearing for released academy players" as string | undefined,
+  tagline: "Global Youth Talent, Verified",
   summary:
     "A welfare-first football recruitment platform helping released academy players aged 16+ find their next chapter — with verified clubs, guardian safeguards, and a human placement manager on every claim." as
     | string
@@ -36,7 +37,7 @@ export function siteDescription() {
 }
 
 export const primaryNav: readonly NavItem[] = [
-  { href: "/how-it-works", label: "How it Works" },
+  { href: "/how-it-works", label: "How It Works" },
   { href: "/players", label: "Players" },
   { href: "/parents", label: "Parents" },
   { href: "/clubs", label: "Clubs" },
@@ -46,7 +47,7 @@ export const primaryNav: readonly NavItem[] = [
 ]
 
 export const footerPlatformNav: readonly NavItem[] = [
-  { href: "/how-it-works", label: "How it Works" },
+  { href: "/how-it-works", label: "How It Works" },
   { href: "/players", label: "Players" },
   { href: "/parents", label: "Parents" },
   { href: "/clubs", label: "Clubs" },
