@@ -9,7 +9,7 @@ export async function GET(request: Request) {
   if (!session) {
     return NextResponse.json({ message: "Unauthenticated." }, { status: 401 });
   }
-  if (session.user.role !== "admin") {
+  if (session.user.role !== "platform_admin") {
     return NextResponse.json({ message: "Forbidden." }, { status: 403 });
   }
 

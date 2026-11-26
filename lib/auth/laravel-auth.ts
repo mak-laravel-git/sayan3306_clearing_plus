@@ -5,6 +5,7 @@ import type {
   LaravelTokenResponse,
   TwoFactorChallengeResponse,
   User,
+  VerificationChallengeResponse,
 } from "@/types/auth";
 
 /**
@@ -16,12 +17,22 @@ import type {
 
 export type TokenEnvelope = LaravelTokenResponse & { user: User };
 
-export type LoginResult = TokenEnvelope | TwoFactorChallengeResponse;
+export type LoginResult =
+  | TokenEnvelope
+  | TwoFactorChallengeResponse
+  | VerificationChallengeResponse;
 
 export function isTwoFactorChallenge(
   data: LoginResult,
 ): data is TwoFactorChallengeResponse {
   return (data as TwoFactorChallengeResponse).two_factor === true;
+}
+
+/** The email address has to be verified with a code before any session exists. */
+export function isVerificationChallenge(
+  data: LoginResult,
+): data is VerificationChallengeResponse {
+  return (data as VerificationChallengeResponse).verification_required === true;
 }
 
 export async function requestLogin(input: {
@@ -58,12 +69,53 @@ export async function requestRegister(input: {
   email: string;
   password: string;
   password_confirmation: string;
-}): Promise<TokenEnvelope> {
+}): Promise<TokenEnvelope | VerificationChallengeResponse> {
   try {
     const response = await laravelHttp.post("/auth/register", input);
-    return unwrapOrThrow<TokenEnvelope>(response);
+    return unwrapOrThrow<TokenEnvelope | VerificationChallengeResponse>(response);
   } catch (error) {
     throw toApiError(error, "Registration failed");
+  }
+}
+
+/** A right code verifies the address and carries the sign-in on: a token, or the two-factor step. */
+export async function requestVerifyEmail(input: {
+  challenge_token: string;
+  code: string;
+}): Promise<TokenEnvelope | TwoFactorChallengeResponse> {
+  try {
+    const response = await laravelHttp.post("/auth/verify-email", input);
+    return unwrapOrThrow<TokenEnvelope | TwoFactorChallengeResponse>(response);
+  } catch (error) {
+    throw toApiError(error, "Verification failed");
+  }
+}
+
+export async function requestResendVerification(input: {
+  challenge_token: string;
+}): Promise<{ message: string }> {
+  try {
+    const response = await laravelHttp.post("/auth/resend-verification", input);
+    unwrapOrThrow<null>(response);
+    return { message: response.data?.message ?? "A new code is on its way." };
+  } catch (error) {
+    throw toApiError(error, "Unable to send a new code");
+  }
+}
+
+/** An account an administrator created: the code from the invitation email plus the person's own password. */
+export async function requestActivate(input: {
+  email: string;
+  code: string;
+  password: string;
+  password_confirmation: string;
+}): Promise<{ message: string }> {
+  try {
+    const response = await laravelHttp.post("/auth/activate", input);
+    unwrapOrThrow<null>(response);
+    return { message: response.data?.message ?? "Account activated." };
+  } catch (error) {
+    throw toApiError(error, "Unable to activate the account");
   }
 }
 

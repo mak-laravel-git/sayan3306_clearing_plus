@@ -5,7 +5,7 @@ import { useTheme } from "next-themes";
 import { useMemo, useState, useSyncExternalStore, useTransition } from "react";
 import { toast } from "sonner";
 
-import { updatePreferencesAction } from "@/app/(admin)/admin/profile/actions";
+import { updatePreferencesAction } from "@/app/(account)/account/profile/actions";
 import {
   Combobox,
   ComboboxContent,

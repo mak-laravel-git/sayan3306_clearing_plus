@@ -15,7 +15,7 @@ import {
 export async function revokeDeviceAction(id: number): Promise<ActionResult> {
   try {
     await revokeDevice(id);
-    revalidatePath("/admin/devices");
+    revalidatePath("/account/devices");
     return { ok: true, message: "Device signed out." };
   } catch (error) {
     return toResult(error, "Unable to sign out this device.");
@@ -25,7 +25,7 @@ export async function revokeDeviceAction(id: number): Promise<ActionResult> {
 export async function forgetDeviceAction(id: number): Promise<ActionResult> {
   try {
     await forgetDevice(id);
-    revalidatePath("/admin/devices");
+    revalidatePath("/account/devices");
     return { ok: true, message: "Removed from the history." };
   } catch (error) {
     return toResult(error, "Unable to remove this device.");
@@ -35,7 +35,7 @@ export async function forgetDeviceAction(id: number): Promise<ActionResult> {
 export async function clearHistoryAction(): Promise<ActionResult> {
   try {
     const { removed } = await clearDeviceHistory();
-    revalidatePath("/admin/devices");
+    revalidatePath("/account/devices");
     return {
       ok: true,
       message:
@@ -69,7 +69,7 @@ export async function signOutEverywhereAction(
     redirect("/login");
   }
 
-  revalidatePath("/admin/devices");
+  revalidatePath("/account/devices");
   const { revoked } = result;
   return {
     ok: true,

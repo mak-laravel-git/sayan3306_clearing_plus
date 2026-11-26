@@ -22,7 +22,7 @@ export type UserSummary = {
   name: string;
   email: string;
   avatar?: string | null;
-  role?: "admin" | "user";
+  role?: string | null;
   timezone?: string | null;
 };
 

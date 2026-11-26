@@ -22,7 +22,7 @@ function hrefFor(category: string, page = 1) {
   const params = new URLSearchParams();
   if (category) params.set("category", category);
   if (page > 1) params.set("page", String(page));
-  return params.size ? `/admin/activity?${params}` : "/admin/activity";
+  return params.size ? `/account/activity?${params}` : "/account/activity";
 }
 
 export function MyActivity({

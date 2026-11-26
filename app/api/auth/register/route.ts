@@ -4,6 +4,7 @@ import { z } from "zod";
 import { authErrorResponse } from "@/lib/auth/route-error";
 import { requestRegister } from "@/lib/auth/laravel-auth";
 import { createSession } from "@/lib/auth/auth-cookies";
+import { storeVerificationChallenge } from "@/lib/auth/verification-cookie";
 
 const registerSchema = z
   .object({
@@ -33,6 +34,14 @@ export async function POST(request: Request) {
     }
 
     const result = await requestRegister(parsed.data);
+
+    if ("verification_required" in result) {
+      await storeVerificationChallenge(result.challenge_token);
+      return NextResponse.json(
+        { verification_required: true, email: result.email },
+        { status: 201 },
+      );
+    }
 
     await createSession({
       accessToken: result.access_token,

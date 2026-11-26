@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
 
-import { revokeDeviceAction } from "@/app/(admin)/admin/devices/actions";
+import { revokeDeviceAction } from "@/app/(account)/account/devices/actions";
 import {
   DeviceIcon,
   deviceLabel,

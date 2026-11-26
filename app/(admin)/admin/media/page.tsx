@@ -1,10 +1,9 @@
 import { Suspense } from "react";
-import { redirect } from "next/navigation";
 
 import { MediaLibrary } from "@/components/admin/media/media-library";
 import { RouteReady } from "@/components/transitions/route-ready";
 import { ApiError } from "@/lib/auth/api-error";
-import { getSession } from "@/lib/auth/auth-cookies";
+import { requirePermission } from "@/lib/auth/dal";
 import { listAdminMedia } from "@/lib/media/library";
 import type { MediaListResult, MediaRecord, MediaTypeFilter } from "@/lib/media/types";
 
@@ -13,8 +12,7 @@ export default async function MediaPage({
 }: {
   searchParams: Promise<{ q?: string; kind?: string }>;
 }) {
-  const session = await getSession();
-  if (!session) redirect("/login");
+  const user = await requirePermission("media.manage", "admin");
 
   const params = await searchParams;
   const query = new URLSearchParams({ per_page: "24" });
@@ -51,7 +49,7 @@ export default async function MediaPage({
       </div>
       <Suspense>
         <MediaLibrary
-          userId={session.user.id}
+          userId={user.id}
           initialMedia={media}
           initialMeta={meta}
           loadError={loadError}

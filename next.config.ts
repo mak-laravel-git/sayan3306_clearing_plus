@@ -6,6 +6,10 @@ import { securityHeaders } from "./lib/security/headers";
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  // Lets a layout answer "this role may not open this dashboard" with a real 403 page (forbidden()).
+  experimental: {
+    authInterrupts: true,
+  },
   // Dev HMR is blocked when the page is opened via 127.0.0.1 while the
   // server advertises localhost (or the reverse). Allow both loopback hosts.
   allowedDevOrigins: ["127.0.0.1", "localhost"],

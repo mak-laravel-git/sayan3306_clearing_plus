@@ -51,7 +51,7 @@ export async function updateProfileAction(
     await syncSessionUser(result.user);
 
     revalidatePath("/admin", "layout");
-    revalidatePath("/admin/profile");
+    revalidatePath("/account/profile");
     return { ok: true, message: "Profile updated successfully." };
   } catch (error) {
     return toResult(error, "Unable to update profile.");
@@ -69,7 +69,7 @@ export async function updatePreferencesAction(input: {
     await syncSessionUser(result.user);
 
     revalidatePath("/admin", "layout");
-    revalidatePath("/admin/settings");
+    revalidatePath("/account/settings");
     return { ok: true, message: "Preferences saved." };
   } catch (error) {
     return toResult(error, "Unable to save preferences.");

@@ -9,7 +9,7 @@ import {
   enableTwoFactorAction,
   regenerateRecoveryCodesAction,
   type TwoFactorEnrollment,
-} from "@/app/(admin)/admin/profile/actions";
+} from "@/app/(account)/account/profile/actions";
 import PasswordInput from "@/components/forms/password-input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";

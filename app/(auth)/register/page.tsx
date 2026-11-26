@@ -28,6 +28,7 @@ import {
 } from "@/components/forms/form";
 import { Input } from "@/components/ui/input";
 import { firstAuthErrorMessage, postAuthApi } from "@/lib/auth/client";
+import { homeFor } from "@/lib/auth/portals";
 import { syncStoredThemeToAccount } from "@/lib/theme/persist-theme";
 import type { User } from "@/types/auth";
 
@@ -71,7 +72,7 @@ export default function RegisterPage() {
   });
 
   async function onSubmit(values: RegisterValues) {
-    const result = await postAuthApi<{ user: User }>(
+    const result = await postAuthApi<{ user: User } | { verification_required: true; email: string }>(
       "/api/auth/register",
       values,
     );
@@ -81,9 +82,17 @@ export default function RegisterPage() {
       return;
     }
 
+    // The email has to be confirmed with a code before a session exists.
+    if ("verification_required" in result.data) {
+      sessionStorage.setItem("verify_email", result.data.email);
+      toast.success("Account created. Check your email for the code.");
+      router.push("/verify-email");
+      return;
+    }
+
     await syncStoredThemeToAccount(result.data.user.theme);
     toast.success("Account created");
-    router.push("/admin");
+    router.push(homeFor(result.data.user));
     router.refresh();
   }
 

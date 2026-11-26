@@ -2,7 +2,7 @@
 
 import { useActionState, useState } from "react";
 
-import { signOutEverywhereAction } from "@/app/(admin)/admin/devices/actions";
+import { signOutEverywhereAction } from "@/app/(account)/account/devices/actions";
 import PasswordInput from "@/components/forms/password-input";
 import { Button } from "@/components/ui/button";
 import {

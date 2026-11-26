@@ -24,7 +24,7 @@ const architecture = [
   },
   {
     title: "Role checks",
-    body: "auth:sanctum proves who you are. The role middleware decides what you can do.",
+    body: "auth:sanctum proves who you are. Roles and permissions decide what you can do.",
   },
 ];
 
@@ -45,7 +45,7 @@ export function DashboardHome({ user, stats }: { user: User | undefined; stats: 
     },
     {
       label: "Role",
-      value: user?.role ?? "—",
+      value: user?.role ? user.role.replace(/_/g, " ") : "—",
       hint: "Assigned by the API",
       icon: ShieldCheck,
       featured: false,
@@ -121,7 +121,7 @@ export function DashboardHome({ user, stats }: { user: User | undefined; stats: 
         ))}
       </div>
 
-      {user?.role === "admin" ? (
+      {user?.role === "platform_admin" ? (
         <AdminDashboardCharts audit={stats.audit} media={stats.media} />
       ) : (
         <PersonalDashboardChart stats={stats.personal} />

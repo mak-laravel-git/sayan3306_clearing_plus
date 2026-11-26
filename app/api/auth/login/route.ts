@@ -2,9 +2,14 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 
 import { authErrorResponse } from "@/lib/auth/route-error";
-import { isTwoFactorChallenge, requestLogin } from "@/lib/auth/laravel-auth";
+import {
+  isTwoFactorChallenge,
+  isVerificationChallenge,
+  requestLogin,
+} from "@/lib/auth/laravel-auth";
 import { createSession } from "@/lib/auth/auth-cookies";
 import { storeChallengeToken } from "@/lib/auth/two-factor-cookie";
+import { storeVerificationChallenge } from "@/lib/auth/verification-cookie";
 
 const loginSchema = z.object({
   email: z.string().email(),
@@ -28,6 +33,12 @@ export async function POST(request: Request) {
     }
 
     const result = await requestLogin(parsed.data);
+
+    if (isVerificationChallenge(result)) {
+      // The email must be verified first: no session yet, only the code step.
+      await storeVerificationChallenge(result.challenge_token);
+      return NextResponse.json({ verification_required: true, email: result.email });
+    }
 
     if (isTwoFactorChallenge(result)) {
       // No session yet. The opaque, short-lived challenge token goes into an

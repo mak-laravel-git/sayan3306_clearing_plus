@@ -30,6 +30,7 @@ import {
 } from "@/components/forms/form";
 import { Input } from "@/components/ui/input";
 import { firstAuthErrorMessage, postAuthApi } from "@/lib/auth/client";
+import { safeNextFor } from "@/lib/auth/portals";
 import { safeRedirectPath } from "@/lib/auth/redirect";
 import { SESSION_EXPIRED_REASON } from "@/lib/auth/session-expired";
 import { syncStoredThemeToAccount } from "@/lib/theme/persist-theme";
@@ -50,7 +51,8 @@ function LoginForm() {
   const router = useTransitionRouter();
   const searchParams = useSearchParams();
   const sessionExpired = searchParams.get("reason") === SESSION_EXPIRED_REASON;
-  const next = safeRedirectPath(searchParams.get("next")) as Route;
+  // Only honoured when it stays inside the person's own dashboard or account; see safeNextFor.
+  const requestedNext = safeRedirectPath(searchParams.get("next"), "/");
   const sessionToastShown = useRef(false);
   const [registrationEnabled, setRegistrationEnabled] = useState(true);
 
@@ -80,7 +82,9 @@ function LoginForm() {
 
   async function onSubmit(values: LoginValues) {
     const result = await postAuthApi<
-      { user: User } | { two_factor: true }
+      | { user: User }
+      | { two_factor: true }
+      | { verification_required: true; email: string }
     >("/api/auth/login", values);
 
     if (!result.ok) {
@@ -88,18 +92,25 @@ function LoginForm() {
       return;
     }
 
+    if ("verification_required" in result.data) {
+      sessionStorage.setItem("verify_email", result.data.email);
+      sessionStorage.setItem("challenge_next", requestedNext);
+      router.push("/verify-email");
+      return;
+    }
+
     if ("two_factor" in result.data && result.data.two_factor) {
-      sessionStorage.setItem("challenge_next", next);
+      sessionStorage.setItem("challenge_next", requestedNext);
       router.push("/two-factor-challenge");
       return;
     }
 
     if ("user" in result.data) {
       await syncStoredThemeToAccount(result.data.user.theme);
+      toast.success("Signed in");
+      router.push(safeNextFor(result.data.user, requestedNext) as Route);
+      router.refresh();
     }
-    toast.success("Signed in");
-    router.push(next);
-    router.refresh();
   }
 
   return (

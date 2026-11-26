@@ -15,6 +15,7 @@ import {
   isSiteScopedPage,
   validSiteKey,
 } from "@/lib/admin/site-keys";
+import { ACCOUNT_HOME, homeFor, isAccountPath, portalOfPath } from "@/lib/auth/portals";
 import { BOT_UA, reportBotHit } from "@/lib/seo/bot-hit";
 
 /**
@@ -32,6 +33,8 @@ const AUTH_ONLY_PATHS = [
   "/forgot-password",
   "/reset-password",
   "/two-factor-challenge",
+  "/verify-email",
+  "/activate",
 ];
 
 export async function proxy(request: NextRequest, event: NextFetchEvent) {
@@ -57,9 +60,11 @@ async function handleProxy(request: NextRequest) {
   }
 
   const isAdmin = pathname === "/admin" || pathname.startsWith("/admin/");
+  // Every dashboard and the account area need a signed-in person; which role may open which is decided by the layouts and the API.
+  const isProtected = portalOfPath(pathname) !== null || isAccountPath(pathname);
   const isAuthOnlyPage = AUTH_ONLY_PATHS.includes(pathname);
 
-  if (!isAdmin && !isAuthOnlyPage) {
+  if (!isProtected && !isAuthOnlyPage) {
     return NextResponse.next();
   }
 
@@ -73,7 +78,7 @@ async function handleProxy(request: NextRequest) {
     request.cookies.delete(SESSION_COOKIE);
   }
 
-  if (isAdmin && !authenticated) {
+  if (isProtected && !authenticated) {
     const loginUrl = request.nextUrl.clone();
     loginUrl.pathname = "/login";
     loginUrl.search = "";
@@ -89,15 +94,18 @@ async function handleProxy(request: NextRequest) {
   }
 
   if (isAuthOnlyPage && authenticated) {
-    const adminUrl = request.nextUrl.clone();
-    adminUrl.pathname = "/admin";
-    adminUrl.search = "";
-    return NextResponse.redirect(adminUrl);
+    // Signed in already: go to the dashboard of the role (the layout re-checks it).
+    const homeUrl = request.nextUrl.clone();
+    homeUrl.pathname = session?.user ? homeFor(session.user) : ACCOUNT_HOME;
+    homeUrl.search = "";
+    return NextResponse.redirect(homeUrl);
   }
 
   // Which site the application settings screens edit. Never trust an incoming header.
   const requestHeaders = new Headers(request.headers);
   requestHeaders.delete(ADMIN_SITE_HEADER);
+  // Lets a layout know which page it is rendering for (layouts do not receive the path).
+  requestHeaders.set("x-pathname", pathname);
 
   let chosenSite: string | null = null;
 
@@ -141,11 +149,23 @@ export const config = {
     "/favicon.ico",
     "/admin",
     "/admin/:path*",
+    "/ppm",
+    "/ppm/:path*",
+    "/player",
+    "/player/:path*",
+    "/guardian",
+    "/guardian/:path*",
+    "/club",
+    "/club/:path*",
+    "/account",
+    "/account/:path*",
     "/login",
     "/register",
     "/forgot-password",
     "/reset-password",
     "/two-factor-challenge",
+    "/verify-email",
+    "/activate",
     // Public pages, for crawler monitoring only: no assets, API routes or generated files.
     "/((?!api/|_next/|brand/|og$|.*\\.[A-Za-z0-9]+$).*)",
   ],

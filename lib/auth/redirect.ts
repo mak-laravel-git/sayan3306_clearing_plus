@@ -6,7 +6,7 @@ const PLACEHOLDER_ORIGIN = "http://redirect.invalid";
  * and control characters, then resolves the rest to make sure the result
  * stays on this origin.
  */
-export function safeRedirectPath(value: string | null | undefined, fallback = "/admin"): string {
+export function safeRedirectPath(value: string | null | undefined, fallback = "/account/profile"): string {
   if (!value || !value.startsWith("/") || value.startsWith("//")) return fallback;
   if (/[\\\u0000-\u001f\u007f]/.test(value)) return fallback;
 

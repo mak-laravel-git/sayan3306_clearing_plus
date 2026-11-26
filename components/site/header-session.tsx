@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 
-import { logoutAction } from "@/app/(admin)/actions"
+import { logoutAction } from "@/lib/actions/logout"
 import { SiteHeaderAccount } from "@/components/site/site-header-account"
 import { TransitionLink as Link } from "@/components/transitions/transition-link"
 import { Button } from "@/components/ui/button"

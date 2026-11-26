@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import {
   clearHistoryAction,
   forgetDeviceAction,
-} from "@/app/(admin)/admin/devices/actions";
+} from "@/app/(account)/account/devices/actions";
 import {
   DeviceIcon,
   deviceLabel,
@@ -155,7 +155,7 @@ export function DeviceHistory({
         <nav aria-label="History pages" className="flex items-center justify-between gap-3 text-sm">
           {meta.current_page > 1 ? (
             <Button variant="outline" size="sm" asChild>
-              <Link href={`/admin/devices?page=${meta.current_page - 1}`}>Previous</Link>
+              <Link href={`/account/devices?page=${meta.current_page - 1}`}>Previous</Link>
             </Button>
           ) : (
             <span />
@@ -165,7 +165,7 @@ export function DeviceHistory({
           </span>
           {meta.current_page < meta.last_page ? (
             <Button variant="outline" size="sm" asChild>
-              <Link href={`/admin/devices?page=${meta.current_page + 1}`}>Next</Link>
+              <Link href={`/account/devices?page=${meta.current_page + 1}`}>Next</Link>
             </Button>
           ) : (
             <span />

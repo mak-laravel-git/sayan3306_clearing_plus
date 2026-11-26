@@ -2,7 +2,7 @@
 
 import { useActionState, useState } from "react";
 
-import { deleteAccountAction } from "@/app/(admin)/admin/profile/actions";
+import { deleteAccountAction } from "@/app/(account)/account/profile/actions";
 import PasswordInput from "@/components/forms/password-input";
 import { Button } from "@/components/ui/button";
 import {

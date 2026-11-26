@@ -53,7 +53,7 @@ export async function POST(request: Request) {
     const result = await uploadAvatar(file, file.name || "avatar.webp");
     await updateSession({ ...session, user: result.user });
     revalidatePath("/admin", "layout");
-    revalidatePath("/admin/profile");
+    revalidatePath("/account/profile");
 
     return NextResponse.json({
       message: "Avatar updated successfully.",
@@ -72,7 +72,7 @@ export async function DELETE() {
     const result = await deleteAvatar();
     await updateSession({ ...session, user: result.user });
     revalidatePath("/admin", "layout");
-    revalidatePath("/admin/profile");
+    revalidatePath("/account/profile");
 
     return NextResponse.json({
       message: "Avatar removed successfully.",

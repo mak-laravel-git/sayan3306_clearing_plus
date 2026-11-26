@@ -31,6 +31,7 @@ const REASONS: Record<DeviceRevokedReason, string> = {
   signed_out_everywhere: "Signed out everywhere",
   password_changed: "Password changed",
   password_reset: "Password reset",
+  idle_timeout: "Signed out after inactivity",
 };
 
 export function inactiveLabel(device: UserDevice) {

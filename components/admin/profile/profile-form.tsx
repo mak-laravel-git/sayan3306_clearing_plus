@@ -5,7 +5,7 @@ import { useActionState, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
-import { updateProfileAction } from "@/app/(admin)/admin/profile/actions";
+import { updateProfileAction } from "@/app/(account)/account/profile/actions";
 import { AvatarCropDialog } from "@/components/admin/profile/avatar-crop-dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";

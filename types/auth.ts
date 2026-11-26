@@ -1,4 +1,15 @@
-export type UserRole = "admin" | "user";
+/** The seven roles of the platform. A user works as one of them. */
+export type UserRole =
+  | "platform_admin"
+  | "ppm"
+  | "player"
+  | "guardian"
+  | "club_admin"
+  | "club_user"
+  | "employer";
+
+/** The dashboard a role works in; it is also the URL prefix. */
+export type PortalKey = "admin" | "ppm" | "player" | "guardian" | "club" | "employer";
 
 export type ThemePreference = "light" | "dark" | "system";
 
@@ -7,7 +18,18 @@ export type User = {
   name: string;
   email: string;
   avatar?: string | null;
-  role: UserRole;
+  /** The role this account works as (null only for an account with no role). */
+  role: UserRole | null;
+  roles: UserRole[];
+  /** What the role may do; used to show or hide menu items. The API decides on every call. */
+  permissions: string[];
+  portal: PortalKey | null;
+  requirements?: {
+    two_factor_setup_needed: boolean;
+    idle_minutes: number;
+  };
+  status?: "active" | "unverified" | "suspended";
+  email_verified_at?: string | null;
   two_factor_enabled: boolean;
   email_notifications?: boolean;
   push_notifications?: boolean;
@@ -38,7 +60,8 @@ export type DeviceRevokedReason =
   | "revoked"
   | "signed_out_everywhere"
   | "password_changed"
-  | "password_reset";
+  | "password_reset"
+  | "idle_timeout";
 
 export type UserDevice = {
   id: number;
@@ -66,5 +89,12 @@ export type PaginationMeta = {
 /** Returned by /auth/login when the account has 2FA enabled, instead of a token pair. */
 export type TwoFactorChallengeResponse = {
   two_factor: true;
+  challenge_token: string;
+};
+
+/** Returned by /auth/login and /auth/register while the email address still has to be verified. */
+export type VerificationChallengeResponse = {
+  verification_required: true;
+  email: string;
   challenge_token: string;
 };

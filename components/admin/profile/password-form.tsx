@@ -2,7 +2,7 @@
 
 import { useActionState } from "react";
 
-import { updatePasswordAction } from "@/app/(admin)/admin/profile/actions";
+import { updatePasswordAction } from "@/app/(account)/account/profile/actions";
 import PasswordInput from "@/components/forms/password-input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";

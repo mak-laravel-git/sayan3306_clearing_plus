@@ -2,7 +2,7 @@
 
 import { toast } from "sonner";
 
-import { updatePreferencesAction } from "@/app/(admin)/admin/profile/actions";
+import { updatePreferencesAction } from "@/app/(account)/account/profile/actions";
 import type { ThemePreference } from "@/types/auth";
 
 const THEME_STORAGE_KEY = "theme";

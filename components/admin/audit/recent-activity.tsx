@@ -17,7 +17,7 @@ export function RecentActivity({ entries, total }: { entries: AuditEntry[]; tota
       />
       {total > entries.length ? (
         <Button variant="outline" size="sm" className="self-start" asChild>
-          <Link href="/admin/activity">View all activity</Link>
+          <Link href="/account/activity">View all activity</Link>
         </Button>
       ) : null}
     </div>

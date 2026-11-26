@@ -1,13 +1,9 @@
-import { redirect } from "next/navigation";
-
 import { RealtimeConsole } from "@/components/admin/realtime/realtime-console";
-import { getSession } from "@/lib/auth/auth-cookies";
+import { requirePermission } from "@/lib/auth/dal";
 import { RouteReady } from "@/components/transitions/route-ready";
 
 export default async function RealtimePage() {
-  const session = await getSession();
-  if (!session) redirect("/login");
-  if (session.user.role !== "admin") redirect("/admin");
+  const user = await requirePermission("realtime.diagnose", "admin");
 
   return (
     <div className="mx-auto flex w-full max-w-5xl flex-col gap-6">
@@ -22,7 +18,7 @@ export default async function RealtimePage() {
           on your user channel.
         </p>
       </div>
-      <RealtimeConsole userId={session.user.id} />
+      <RealtimeConsole userId={user.id} />
     </div>
   );
 }

@@ -1,17 +1,23 @@
 import { DashboardHome } from "@/components/admin/dashboard-home";
 import { getStatsOrNull } from "@/lib/admin/stats";
-import { getSession } from "@/lib/auth/auth-cookies";
+import { getCurrentUser, hasPermission } from "@/lib/auth/dal";
 import { RouteReady } from "@/components/transitions/route-ready";
 
 export default async function AdminDashboardPage() {
-  const session = await getSession();
-  const isAdmin = session?.user?.role === "admin";
+  // The layout already refused anyone who is not a platform admin.
+  const user = await getCurrentUser();
+  const canAudit = user !== null && hasPermission(user, "application.audit.view");
+  const canMedia = user !== null && hasPermission(user, "media.manage");
 
-  const [audit, media, personal] = await Promise.all([
-    isAdmin ? getStatsOrNull("audit") : null,
-    isAdmin ? getStatsOrNull("media") : null,
-    session && !isAdmin ? getStatsOrNull("profile") : null,
+  const [audit, media] = await Promise.all([
+    canAudit ? getStatsOrNull("audit") : null,
+    canMedia ? getStatsOrNull("media") : null,
   ]);
 
-  return <><RouteReady /><DashboardHome user={session?.user} stats={{ audit, media, personal }} /></>;
+  return (
+    <>
+      <RouteReady />
+      <DashboardHome user={user ?? undefined} stats={{ audit, media, personal: null }} />
+    </>
+  );
 }
