@@ -1,6 +1,13 @@
+import type { Metadata } from "next";
+
 import { StatusStage } from "@/components/status/status-stage";
 import { RouteReady } from "@/components/transitions/route-ready";
 import { TransitionLink as Link } from "@/components/transitions/transition-link";
+
+export const metadata: Metadata = {
+  title: "Page not found",
+  robots: { index: false, follow: false },
+};
 
 export default function NotFound() {
   return (

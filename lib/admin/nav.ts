@@ -1,4 +1,4 @@
-import { Activity, Database, History, Images, LayoutDashboard, Mail, MonitorSmartphone, Radio, ScrollText, Search, Settings, Settings2, Shield, SlidersHorizontal, UserRound } from "lucide-react";
+import { Activity, BarChart3, Database, History, Images, LayoutDashboard, Mail, MonitorSmartphone, Radio, ScrollText, Search, Settings, Settings2, Shield, SlidersHorizontal, UserRound } from "lucide-react";
 
 import { modules } from "@/lib/modules";
 import type { NavGroup, NavItem } from "@/lib/nav";
@@ -57,6 +57,12 @@ const rawAdminNav: ToggleableNavGroup[] = [
             href: "/admin/application/seo-health",
             icon: Activity,
             enabled: modules.seoHealth,
+          },
+          {
+            title: "Site traffic",
+            href: "/admin/application/seo-traffic",
+            icon: BarChart3,
+            enabled: modules.seoTraffic,
           },
           {
             title: "Database backup",

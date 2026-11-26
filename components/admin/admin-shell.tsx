@@ -62,6 +62,7 @@ function breadcrumbsFor(pathname: string): BreadcrumbItem[] {
     const sections: [string, string][] = [
       ["/admin/application/smtp", "SMTP"],
       ["/admin/application/seo-health", "SEO health"],
+      ["/admin/application/seo-traffic", "Site traffic"],
       ["/admin/application/seo", "SEO"],
       ["/admin/application/backup", "Database backup"],
       ["/admin/application/audit", "Audit"],

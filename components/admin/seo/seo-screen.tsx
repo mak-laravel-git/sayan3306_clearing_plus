@@ -4,6 +4,7 @@ import { useState } from "react";
 
 import { ApplicationSectionHeader } from "@/components/admin/application/application-settings";
 import { SeoFilesCard } from "@/components/admin/seo/seo-files-card";
+import { SeoJobsCard } from "@/components/admin/seo/seo-jobs-card";
 import { needsAttention, type SeoTab } from "@/components/admin/seo/seo-meta";
 import { SeoPagesList } from "@/components/admin/seo/seo-pages-list";
 import { SeoSettingsForm } from "@/components/admin/seo/seo-settings-form";
@@ -111,6 +112,9 @@ export function SeoScreen({
             timeZone={timeZone}
             onFiles={(files) => setOverview((current) => ({ ...current, files }))}
           />
+          <div className="mt-6">
+            <SeoJobsCard jobs={overview.jobs} timeZone={timeZone} />
+          </div>
         </TabsContent>
       </Tabs>
     </div>

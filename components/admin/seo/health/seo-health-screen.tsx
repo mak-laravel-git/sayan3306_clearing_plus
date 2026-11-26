@@ -30,6 +30,7 @@ import {
 } from "@/components/admin/seo/health/health-meta";
 import { SeoAuditPageSheet } from "@/components/admin/seo/health/seo-audit-page-sheet";
 import { RobotsPanel, SitemapPanel, SitePanel } from "@/components/admin/seo/health/seo-health-sections";
+import { ScopePanel } from "@/components/admin/seo/health/seo-scope-panel";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -168,6 +169,7 @@ function ScoreCard({
   const completed = latest.completed;
   const score = completed?.score ?? null;
   const sections = completed?.summary?.sections ?? [];
+  const basisScores = completed?.summary?.basis_scores ?? [];
 
   return (
     <section className="space-y-5 rounded-xl border border-border/70 bg-card/70 p-6">
@@ -191,6 +193,22 @@ function ScoreCard({
           />
         ) : null}
       </div>
+
+      {basisScores.length > 0 ? (
+        <ul className="grid gap-3 sm:grid-cols-2">
+          {basisScores.map((item) => (
+            <li key={item.key} className="rounded-xl border border-border/70 p-3">
+              <span className="block text-sm font-medium">{item.label}</span>
+              <span className="block text-xl font-semibold tabular-nums">{item.score === null ? "—" : `${item.score}%`}</span>
+              <span className="block text-xs leading-5 text-muted-foreground">
+                {item.key === "technical"
+                  ? "Checks based on Google guidelines and published standards."
+                  : "Best practices that Google does not rank on. A miss here is advice, not an error."}
+              </span>
+            </li>
+          ))}
+        </ul>
+      ) : null}
 
       {sections.length > 0 ? (
         <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
@@ -728,6 +746,17 @@ export function SeoHealthScreen({
         </Alert>
       ) : null}
 
+      {latest.completed?.environment === "staging" ? (
+        <Alert>
+          <Info aria-hidden />
+          <AlertTitle>Staging scan</AlertTitle>
+          <AlertDescription>
+            Indexing is blocked on purpose, so checks that judge whether pages can be indexed are not scored. Set{" "}
+            <code>SEO_ENVIRONMENT=production</code> on the API when the site goes live.
+          </AlertDescription>
+        </Alert>
+      ) : null}
+
       {latest.completed?.environment === "development" ? (
         <Alert>
           <Info aria-hidden />
@@ -757,6 +786,7 @@ export function SeoHealthScreen({
           />
           <Breakdown latest={latest} />
           <Issues latest={latest} onOpen={openCheck} />
+          <ScopePanel scope={latest.scope} />
           <History audits={history} timeZone={timeZone} />
         </TabsContent>
 

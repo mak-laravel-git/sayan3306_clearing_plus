@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
+import type { NextFetchEvent, NextRequest } from "next/server";
 
 import {
   SESSION_COOKIE,
@@ -8,6 +8,7 @@ import {
 } from "@/lib/auth/session";
 import { SESSION_EXPIRED_REASON } from "@/lib/auth/session-expired";
 import { runWithFrontendOrigin } from "@/lib/auth/frontend-origin-store";
+import { BOT_UA, reportBotHit } from "@/lib/seo/bot-hit";
 
 /**
  * Proxy (Next.js 16's replacement for middleware.ts) only does the
@@ -26,7 +27,12 @@ const AUTH_ONLY_PATHS = [
   "/two-factor-challenge",
 ];
 
-export async function proxy(request: NextRequest) {
+export async function proxy(request: NextRequest, event: NextFetchEvent) {
+  // Crawler visits are reported after the response is sent; the API ignores them while monitoring is off.
+  if (request.method === "GET" && BOT_UA.test(request.headers.get("user-agent") ?? "")) {
+    event.waitUntil(reportBotHit(request));
+  }
+
   const origin =
     request.headers.get("origin") ?? request.nextUrl.origin;
 
@@ -102,5 +108,7 @@ export const config = {
     "/forgot-password",
     "/reset-password",
     "/two-factor-challenge",
+    // Public pages, for crawler monitoring only: no assets, API routes or generated files.
+    "/((?!api/|_next/|brand/|og$|.*\\.[A-Za-z0-9]+$).*)",
   ],
 };

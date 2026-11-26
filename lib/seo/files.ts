@@ -1,6 +1,5 @@
 import "server-only";
 
-import { primaryNav } from "@/content/site";
 import { SeoFetchError, seoFetch, seoPrimaryOrigin } from "@/lib/seo/api";
 
 const PUBLIC_CACHE = "public, max-age=300";
@@ -47,9 +46,10 @@ export async function proxySeoFile(file: string, { contentType, fallback }: Prox
   }
 }
 
-const FALLBACK_PAGES = [{ href: "/", label: "Home" }, ...primaryNav];
+/** Only the home page is certain while the API is down; guessing other pages would publish wrong URLs. */
+const FALLBACK_PAGES = [{ href: "/", label: "Home" }];
 
-/** Sitemap for API outages: only the fixed top-level pages, so crawlers never see an error body. */
+/** Sitemap for API outages: the home page only, so crawlers never see an error body or a guessed URL. */
 export function fallbackSitemap(): string {
   const origin = seoPrimaryOrigin();
   const urls = FALLBACK_PAGES.map(({ href }) => `  <url><loc>${origin}${href}</loc></url>`);
@@ -63,7 +63,7 @@ export function fallbackSitemap(): string {
   ].join("\n");
 }
 
-/** llms.txt for API outages: a plain list of the fixed top-level pages. */
+/** llms.txt for API outages: the home page only. */
 export function fallbackLlms(): string {
   const origin = seoPrimaryOrigin();
 

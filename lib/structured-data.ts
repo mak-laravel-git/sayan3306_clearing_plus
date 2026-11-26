@@ -1,8 +1,7 @@
-import { site } from "@/content/site"
 import type { SeoIdentity } from "@/lib/seo/types"
 
-function personId(origin: string) {
-  return `${origin}#person`
+function entityId(origin: string) {
+  return `${origin}#entity`
 }
 
 function websiteId(origin: string) {
@@ -13,22 +12,28 @@ function originOf(identity: SeoIdentity) {
   return identity.site_url.replace(/\/$/, "")
 }
 
-export function personSchema(identity: SeoIdentity): Record<string, unknown> {
+/**
+ * The site owner (Organization or Person) from the backend SEO settings.
+ * Only fields an admin has filled in are emitted, so no placeholder data
+ * can reach search engines.
+ */
+export function entitySchema(
+  identity: SeoIdentity,
+  description?: string | null,
+): Record<string, unknown> {
   const origin = originOf(identity)
+  const about = identity.tagline ?? description
 
   return {
     "@context": "https://schema.org",
-    "@type": "Person",
+    "@type": identity.entity_type,
+    "@id": entityId(origin),
     name: identity.name,
-    "@id": personId(origin),
     url: origin,
-    ...(site.role ? { jobTitle: site.role } : {}),
-    ...(site.summary ? { description: site.summary } : {}),
-    ...(site.email ? { email: site.email } : {}),
-    ...(site.profiles.length > 0
-      ? { sameAs: site.profiles.map((profile) => profile.href) }
-      : {}),
-    ...(site.skills.length > 0 ? { knowsAbout: [...site.skills] } : {}),
+    ...(about ? { description: about } : {}),
+    ...(identity.logo_url && identity.entity_type === "Organization" ? { logo: identity.logo_url } : {}),
+    ...(identity.contact_email ? { email: identity.contact_email } : {}),
+    ...(identity.same_as.length > 0 ? { sameAs: identity.same_as } : {}),
   }
 }
 
@@ -45,8 +50,8 @@ export function websiteSchema(
     ...(description ? { description } : {}),
     "@id": websiteId(origin),
     url: origin,
-    inLanguage: identity.locale,
-    publisher: { "@id": personId(origin) },
+    inLanguage: identity.locale.replace("_", "-"),
+    publisher: { "@id": entityId(origin) },
   }
 }
 
@@ -74,5 +79,5 @@ export function siteStructuredData(
   identity: SeoIdentity,
   description?: string | null,
 ): Record<string, unknown>[] {
-  return [personSchema(identity), websiteSchema(identity, description)]
+  return [entitySchema(identity, description), websiteSchema(identity, description)]
 }

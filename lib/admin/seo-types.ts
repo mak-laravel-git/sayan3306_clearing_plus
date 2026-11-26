@@ -37,6 +37,22 @@ export type SeoIdentity = {
   site_url: string;
   logo_url: string | null;
   locale: string;
+  entity_type: "Organization" | "Person";
+  same_as: string[];
+  contact_email: string | null;
+  tagline: string | null;
+  indexing_blocked: boolean;
+  tracking_enabled: boolean;
+};
+
+export type SeoEnvironment = "production" | "staging" | "development";
+
+export type SeoJobStatus = {
+  job: string;
+  label: string;
+  last_run_at: string | null;
+  every_hours: number;
+  overdue: boolean;
 };
 
 export type SeoGlobalSettings = {
@@ -45,6 +61,14 @@ export type SeoGlobalSettings = {
   site_url_fallback: string;
   /** Set in production when canonical links would still be local or the revalidate hook is missing. */
   site_url_warning?: string | null;
+  /** Declared by SEO_ENVIRONMENT on the API; anything but production blocks indexing on purpose. */
+  environment: SeoEnvironment;
+  indexing_blocked: boolean;
+  environment_warning: string | null;
+  entity_type: "Organization" | "Person";
+  same_as: string[];
+  contact_email: string | null;
+  tagline: string | null;
   title_prefix: string;
   title_suffix: string;
   default_description: string;
@@ -133,12 +157,24 @@ export type SeoOverview = {
   settings: SeoGlobalSettings;
   pages: SeoPageEntry[];
   files: SeoFileEntry[];
+  jobs: SeoJobStatus[];
   types: SeoTypeEntry[];
   options: SeoOptions;
 };
 
 export type SeoSettingsInput = Partial<
-  Omit<SeoGlobalSettings, "site_url" | "site_url_fallback" | "site_url_warning" | "default_og_image_url" | "identity" | "site_url_setting">
+  Omit<
+    SeoGlobalSettings,
+    | "site_url"
+    | "site_url_fallback"
+    | "site_url_warning"
+    | "default_og_image_url"
+    | "identity"
+    | "site_url_setting"
+    | "environment"
+    | "indexing_blocked"
+    | "environment_warning"
+  >
 > & { site_url?: string | null };
 
 export type SeoPageInput = Partial<SeoFieldValues> & {

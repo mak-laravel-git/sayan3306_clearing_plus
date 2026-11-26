@@ -1,6 +1,7 @@
 import { CheckCircle2, CircleSlash, XCircle } from "lucide-react";
 
 import { PRIORITY_LABELS } from "@/components/admin/seo/health/health-meta";
+import { BasisBadge } from "@/components/admin/seo/health/seo-scope-panel";
 import { Badge } from "@/components/ui/badge";
 import type { SeoAuditCheck } from "@/lib/admin/seo-audit-types";
 import { cn } from "cn";
@@ -27,6 +28,7 @@ export function CheckRow({ check, highlighted = false }: { check: SeoAuditCheck;
       <div className="min-w-0 flex-1 space-y-1">
         <div className="flex flex-wrap items-center gap-1.5">
           <p className="text-sm font-medium">{check.label}</p>
+          {check.basis ? <BasisBadge basis={check.basis} /> : null}
           {check.informational ? <Badge variant="outline">Informational</Badge> : null}
           {!check.counted ? <Badge variant="outline">Not scored</Badge> : null}
           {!check.passed && check.counted ? (
@@ -34,6 +36,7 @@ export function CheckRow({ check, highlighted = false }: { check: SeoAuditCheck;
           ) : null}
         </div>
         <p className="text-xs leading-5 text-muted-foreground">{check.message}</p>
+        {check.reference ? <p className="text-xs text-muted-foreground">Source: {check.reference}</p> : null}
         {check.actual !== null || check.expected !== null ? (
           <dl className="grid grid-cols-[4.5rem_1fr] gap-x-2 text-xs">
             <dt className="text-muted-foreground">Found</dt>

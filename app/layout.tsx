@@ -2,14 +2,12 @@ import type { Metadata, Viewport } from "next";
 import { Geist } from "next/font/google";
 import { AnimationProvider } from "@/components/animations/providers/animation-provider";
 import { AppToaster } from "@/components/app-toaster";
-import { JsonLd } from "@/components/seo/json-ld";
 import { SectionErrorBoundary } from "@/components/site/section-error-boundary";
 import { ThemeProvider } from "@/components/theme-provider";
 import { TransitionProvider } from "@/components/transitions/transition-provider";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { fetchBrandIcons } from "@/lib/brand/icons";
 import { fetchPageSeo } from "@/lib/seo/public";
-import { siteStructuredData } from "@/lib/structured-data";
 
 import "./globals.css";
 
@@ -61,7 +59,6 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
       className={`${geistSans.variable} h-full antialiased`}
     >
       <body className="flex min-h-svh flex-col">
-        <JsonLd data={siteStructuredData(home.identity, home.description)} />
         <ThemeProvider
           attribute="class"
           defaultTheme="system"

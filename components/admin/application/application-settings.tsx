@@ -35,6 +35,10 @@ const sections = {
     title: "SEO health",
     description: "A real scan of the rendered pages: meta tags, headings, links, images and speed.",
   },
+  "seo-traffic": {
+    title: "Site traffic & crawler activity",
+    description: "Visits, search-engine referrals, crawler requests and real-user speed, counted by this site itself.",
+  },
   backup: {
     title: "Database backup",
     description: "A database backup every night, kept for 14 days. Back up, restore, or download on demand.",

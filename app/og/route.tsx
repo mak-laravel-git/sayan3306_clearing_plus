@@ -1,6 +1,5 @@
 import { ImageResponse } from "next/og"
 
-import { site } from "@/content/site"
 import { fetchSiteIdentity } from "@/lib/seo/public"
 
 /** Last-resort OG image; pages use their own or the global default image first. */
@@ -24,7 +23,7 @@ export async function GET() {
         <div style={{ display: "flex", fontSize: 72, fontWeight: 600 }}>
           {identity.name}
         </div>
-        {site.role ? (
+        {identity.tagline ? (
           <div
             style={{
               display: "flex",
@@ -33,7 +32,7 @@ export async function GET() {
               color: "#a1a1aa",
             }}
           >
-            {site.role}
+            {identity.tagline}
           </div>
         ) : null}
       </div>

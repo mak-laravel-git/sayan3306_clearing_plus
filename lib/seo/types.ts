@@ -4,6 +4,16 @@ export type SeoIdentity = {
   site_url: string;
   logo_url: string | null;
   locale: string;
+  /** Schema.org type of the site owner; set in SEO settings. */
+  entity_type: "Organization" | "Person";
+  /** Public profile URLs for `sameAs`; empty until an admin adds real ones. */
+  same_as: string[];
+  contact_email: string | null;
+  tagline: string | null;
+  /** True off-production: every page says noindex and robots.txt disallows everything. */
+  indexing_blocked: boolean;
+  /** True when an admin turned on first-party traffic monitoring; the site then reports page views. */
+  tracking_enabled: boolean;
 };
 
 /** Resolved SEO for one URL, as returned by `GET /api/v1/seo/page`. */
@@ -22,7 +32,14 @@ export type ResolvedSeo = {
   canonical: string;
   canonical_base: string;
   self_canonical: boolean;
-  robots: { index: boolean; follow: boolean; max_image_preview: "none" | "standard" | "large" };
+  robots: {
+    index: boolean;
+    follow: boolean;
+    max_image_preview: "none" | "standard" | "large";
+    /** What the page would say on production. */
+    configured_index?: boolean;
+    blocked_by_environment?: boolean;
+  };
   open_graph: {
     title: string;
     description: string | null;

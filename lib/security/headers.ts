@@ -99,6 +99,10 @@ export function securityHeaders(): Header[] {
     // Sent separately because frame-ancestors has no effect while the CSP is Report-Only.
     { key: "X-Frame-Options", value: "DENY" },
     { key: "X-Content-Type-Options", value: "nosniff" },
+    // Off by default: the reverse proxy may already send it. Set HSTS_ENABLED=true on an https-only site.
+    ...(process.env.HSTS_ENABLED === "true"
+      ? [{ key: "Strict-Transport-Security", value: "max-age=31536000" }]
+      : []),
     { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
     { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), payment=(), usb=()" },
   ];

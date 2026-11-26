@@ -22,6 +22,8 @@ export const modules = {
   backups: isEnabled(process.env.NEXT_PUBLIC_MODULE_BACKUPS),
   /** SEO health scanning admin screens. */
   seoHealth: isEnabled(process.env.NEXT_PUBLIC_MODULE_SEO_HEALTH),
+  /** First-party traffic and crawler monitoring admin screen. */
+  seoTraffic: isEnabled(process.env.NEXT_PUBLIC_MODULE_SEO_TRACKING),
   /** Audit log admin screens. */
   audit: isEnabled(process.env.NEXT_PUBLIC_MODULE_AUDIT),
   /** Realtime/Reverb diagnostics admin screen. */

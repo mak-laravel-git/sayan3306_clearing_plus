@@ -22,7 +22,7 @@ export const fetchPageSeo = cache(async (path: string): Promise<ResolvedSeo> => 
       next: { tags: [SEO_TAG], revalidate: SEO_REVALIDATE_SECONDS },
     });
     const body = (await response.json()) as PageSeoBody;
-    if (body.data?.seo) return withPublicOrigin(body.data.seo);
+    if (body.data?.seo) return withPublicOrigin(withIdentityDefaults(body.data.seo));
   } catch (error) {
     if (!(error instanceof SeoFetchError) && process.env.NODE_ENV !== "production") {
       console.warn("[seo] page lookup failed", error);
@@ -34,6 +34,23 @@ export const fetchPageSeo = cache(async (path: string): Promise<ResolvedSeo> => 
 
 export async function fetchSiteIdentity(): Promise<SeoIdentity> {
   return (await fetchPageSeo("/")).identity;
+}
+
+/**
+ * The API may still be an older release while the site is built or deployed, and
+ * not send the newer identity fields yet. Missing ones take their neutral value.
+ */
+export function withIdentityDefaults(seo: ResolvedSeo): ResolvedSeo {
+  const defaults: Partial<SeoIdentity> = {
+    entity_type: "Organization",
+    same_as: [],
+    contact_email: null,
+    tagline: null,
+    indexing_blocked: false,
+    tracking_enabled: false,
+  };
+
+  return { ...seo, identity: { ...defaults, ...seo.identity } };
 }
 
 /**
@@ -73,7 +90,8 @@ function fallbackSeo(path: string): ResolvedSeo {
     canonical: url,
     canonical_base: url,
     self_canonical: true,
-    robots: { index: true, follow: true, max_image_preview: "large" },
+    // Fallback data must never be indexed: it is not the site's real SEO.
+    robots: { index: false, follow: false, max_image_preview: "large" },
     open_graph: {
       title,
       description,
@@ -102,7 +120,19 @@ function fallbackSeo(path: string): ResolvedSeo {
       json_ld: { "@context": "https://schema.org", "@type": "WebPage", name: title, url },
     },
     sitemap: { include: false, priority: 0.5, changefreq: "monthly", lastmod: null },
-    identity: { name: site.name, short_name: site.name, site_url: origin, logo_url: null, locale: "en" },
+    identity: {
+      name: site.name,
+      short_name: site.name,
+      site_url: origin,
+      logo_url: null,
+      locale: "en",
+      entity_type: "Organization",
+      same_as: [],
+      contact_email: null,
+      tagline: null,
+      indexing_blocked: true,
+      tracking_enabled: false,
+    },
     fallback: true,
   };
 }
