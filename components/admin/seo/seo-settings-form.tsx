@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import type { SeoOverview, SeoSettingsInput } from "@/lib/admin/seo-types";
@@ -164,16 +165,23 @@ export function SeoSettingsForm({
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-2">
             <Label htmlFor="seo-entity-type">Owner type</Label>
-            <select
-              id="seo-entity-type"
+            <Select
               value={entityType}
-              onChange={(event) => setEntityType(event.target.value as "Organization" | "Person")}
+              onValueChange={(value) => setEntityType(value as "Organization" | "Person")}
               disabled={pending}
-              className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm"
             >
-              <option value="Organization">Organization (company, club, brand)</option>
-              <option value="Person">Person</option>
-            </select>
+              <SelectTrigger id="seo-entity-type" className="w-full">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Organization">Organization (company, club, brand)</SelectItem>
+                <SelectItem value="Person">Person</SelectItem>
+              </SelectContent>
+            </Select>
+            <p className="text-xs leading-5 text-muted-foreground">
+              Tells search engines whether the site belongs to a business or to one person. Choose Organization for a company,
+              club or brand.
+            </p>
             {error("entity_type")}
           </div>
           <div className="space-y-2">
