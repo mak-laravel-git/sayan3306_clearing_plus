@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation"
 import { useEffect, useRef, type ReactNode } from "react"
 
 /** The native disclosure stays open across client navigations unless closed here. */
-export function MobileMenu({ children }: { children: ReactNode }) {
+export function MobileMenu({ children, className = "relative xl:hidden" }: { children: ReactNode; className?: string }) {
   const pathname = usePathname()
   const ref = useRef<HTMLDetailsElement>(null)
 
@@ -13,8 +13,8 @@ export function MobileMenu({ children }: { children: ReactNode }) {
   }, [pathname])
 
   return (
-    <details ref={ref} className="relative sm:hidden">
-      <summary className="site-nav site-menu">Menu</summary>
+    <details ref={ref} className={className}>
+      <summary className="site-nav site-menu text-cp-ink">Menu</summary>
       {children}
     </details>
   )

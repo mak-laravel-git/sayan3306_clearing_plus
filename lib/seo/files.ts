@@ -46,8 +46,19 @@ export async function proxySeoFile(file: string, { contentType, fallback }: Prox
   }
 }
 
-/** Only the home page is certain while the API is down; guessing other pages would publish wrong URLs. */
-const FALLBACK_PAGES = [{ href: "/", label: "Home" }];
+/** Marketing IA fallbacks when the API is down. */
+const FALLBACK_PAGES = [
+  { href: "/", label: "Home" },
+  { href: "/how-it-works", label: "How it Works" },
+  { href: "/players", label: "Players" },
+  { href: "/parents", label: "Parents" },
+  { href: "/clubs", label: "Clubs" },
+  { href: "/founding-clubs", label: "Founding Clubs" },
+  { href: "/grassroots", label: "Grassroots" },
+  { href: "/about", label: "About" },
+  { href: "/privacy-policy", label: "Privacy Policy" },
+  { href: "/terms", label: "Terms of Use" },
+];
 
 /** Sitemap for API outages: the home page only, so crawlers never see an error body or a guessed URL. */
 export function fallbackSitemap(): string {

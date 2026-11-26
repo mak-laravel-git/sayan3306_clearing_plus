@@ -6,6 +6,9 @@ import { securityHeaders } from "./lib/security/headers";
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  // Dev HMR is blocked when the page is opened via 127.0.0.1 while the
+  // server advertises localhost (or the reverse). Allow both loopback hosts.
+  allowedDevOrigins: ["127.0.0.1", "localhost"],
   // Setting this replaces Next's default list, so extend it: the SEO health
   // scanner reads metadata from <head>, which streaming would leave empty.
   // The token must match the one baked into the API's SEO_SCANNER_USER_AGENT

@@ -1,16 +1,15 @@
 import type { Metadata } from "next"
-import { ArrowRight } from "lucide-react"
-import type { ReactNode } from "react"
-
 import { SeoJsonLd } from "@/components/seo/json-ld"
-import { PostCard, ProjectCard } from "@/components/site/content-cards"
-import { CtaSection } from "@/components/site/cta-section"
+import { FaqAccordion } from "@/components/site/marketing/faq-accordion"
+import { FeatureCardGrid } from "@/components/site/marketing/feature-card-grid"
+import { MarketingHero } from "@/components/site/marketing/marketing-hero"
+import { PillLink } from "@/components/site/marketing/pill-link"
+import { SectionHeading } from "@/components/site/marketing/section-heading"
+import { SectionReveal } from "@/components/site/marketing/section-reveal"
+import { StepCardGrid } from "@/components/site/marketing/step-card-grid"
 import { RouteReady } from "@/components/transitions/route-ready"
 import { TransitionLink as Link } from "@/components/transitions/transition-link"
 import { homePage } from "@/content/pages/home"
-import { services } from "@/content/pages/services"
-import { site } from "@/content/site"
-import { fetchPosts, fetchProjects } from "@/lib/content/api"
 import { toMetadata } from "@/lib/seo/metadata"
 import { fetchPageSeo } from "@/lib/seo/public"
 
@@ -18,187 +17,194 @@ export async function generateMetadata(): Promise<Metadata> {
   return toMetadata(await fetchPageSeo("/"))
 }
 
-function SectionHead({ id, title, intro, more }: { id: string; title: string; intro: string; more?: { href: "/services" | "/projects" | "/blog"; label: string } }) {
-  return (
-    <div className="flex flex-wrap items-end justify-between gap-4">
-      <div className="max-w-2xl">
-        <h2 id={id} className="site-h2">
-          {title}
-        </h2>
-        <p className="site-copy mt-3">{intro}</p>
-      </div>
-      {more ? (
-        <Link href={more.href} className="site-more">
-          {more.label} <ArrowRight aria-hidden className="size-4" />
-        </Link>
-      ) : null}
-    </div>
-  )
-}
-
-function Section({ id, children }: { id: string; children: ReactNode }) {
-  return (
-    <section aria-labelledby={id} className="flex flex-col gap-8">
-      {children}
-    </section>
-  )
-}
-
 export default async function Home() {
-  const [seo, projects, posts] = await Promise.all([
-    fetchPageSeo("/"),
-    fetchProjects({ featured: true, perPage: 4 }),
-    fetchPosts({ perPage: 3 }),
-  ])
+  const seo = await fetchPageSeo("/")
 
   return (
-    <main id="content" tabIndex={-1} className="site-main gap-24 md:py-24">
+    <main id="content" tabIndex={-1} className="flex flex-1 flex-col">
       <RouteReady />
       <SeoJsonLd seo={seo} />
 
-      <section aria-labelledby="home-heading" className="site-reveal max-w-3xl">
-        <p className="site-small font-medium">{homePage.eyebrow}</p>
-        <h1 id="home-heading" className="site-h1 mt-3">
-          {homePage.heading}
-        </h1>
-        <p className="site-lead mt-5 max-w-2xl">{homePage.lead}</p>
-        <div className="mt-8 flex flex-wrap gap-3">
-          <Link href="/contact" className="site-btn">
-            Start a project
-          </Link>
-          <Link href="/projects" className="site-btn-outline">
-            See our work
-          </Link>
+      <MarketingHero
+        title={homePage.heading}
+        lead={homePage.lead}
+        priority
+        actions={homePage.heroCtas.map((cta) => (
+          <PillLink key={cta.href} href={cta.href} variant={cta.variant}>
+            {cta.label}
+          </PillLink>
+        ))}
+      >
+        <div className="rounded-3xl border border-white/15 bg-white/10 p-5 shadow-2xl backdrop-blur-md">
+          <p className="text-xs font-semibold tracking-[0.16em] text-white/60 uppercase">Profile preview</p>
+          <div className="mt-4 aspect-video rounded-2xl bg-gradient-to-br from-cp-primary/40 to-cp-steel/30" />
+          <div className="mt-4 space-y-2">
+            <div className="h-3 w-2/3 rounded-full bg-white/30" />
+            <div className="h-3 w-1/2 rounded-full bg-white/20" />
+          </div>
+          <p className="mt-4 text-sm text-white/70">Verified · Consent gated · PPM mediated</p>
+        </div>
+      </MarketingHero>
+
+      <section className="bg-cp-paper">
+        <div className="cp-section">
+          <SectionHeading eyebrow="Step by step" title={homePage.stepsHeading} lead={homePage.stepsIntro} />
+          <StepCardGrid items={homePage.steps} className="mt-10 lg:grid-cols-4" />
         </div>
       </section>
 
-      <section aria-labelledby="intro-heading" className="site-split">
-        <h2 id="intro-heading" className="site-h2">
-          {homePage.intro.heading}
-        </h2>
-        <div className="site-copy">
-          {homePage.intro.paragraphs.map((paragraph) => (
-            <p key={paragraph}>{paragraph}</p>
-          ))}
-          <p>
-            Want the longer version? Read more{" "}
-            <Link href="/about" className="site-a">
-              about the studio and how we work
-            </Link>
-            .
-          </p>
+      <section className="bg-cp-navy text-white">
+        <div className="cp-section grid gap-8 md:grid-cols-[1.1fr_0.9fr] md:items-center">
+          <SectionHeading
+            light
+            eyebrow={homePage.claimStrip.eyebrow}
+            title={homePage.claimStrip.heading}
+            lead={homePage.claimStrip.lead}
+          />
+          <SectionReveal kind="right">
+            <div className="rounded-3xl border border-white/15 bg-white/5 p-6">
+              <p className="text-xs font-semibold tracking-[0.16em] text-white/50 uppercase">Claim submitted</p>
+              <p className="mt-3 font-display text-xl font-semibold">Awaiting PPM review</p>
+              <p className="mt-2 text-sm text-white/65">Club interest is logged. Player contacts stay private.</p>
+            </div>
+          </SectionReveal>
         </div>
       </section>
 
-      <Section id="services-heading">
-        <SectionHead
-          id="services-heading"
-          title="What we can help with"
-          intro="Four kinds of work make up most of our projects. Many clients start with one and add another once the first release is live."
-          more={{ href: "/services", label: "All services" }}
-        />
-        <div className="grid gap-4 sm:grid-cols-2">
-          {services.map((service) => (
-            <article key={service.slug} className="site-card">
-              <h3 className="site-h3">{service.title}</h3>
-              <p className="site-small mt-2">{service.short}</p>
-            </article>
-          ))}
-        </div>
-      </Section>
-
-      {projects.length > 0 ? (
-        <Section id="work-heading">
-          <SectionHead
-            id="work-heading"
-            title="Selected projects"
-            intro="A few recent case studies, each with the problem, the approach and the results in numbers."
-            more={{ href: "/projects", label: "All projects" }}
-          />
-          <div className="grid gap-6 sm:grid-cols-2">
-            {projects.map((project, index) => (
-              <ProjectCard key={project.id} project={project} priority={index === 0} />
-            ))}
-          </div>
-        </Section>
-      ) : null}
-
-      <Section id="process-heading">
-        <SectionHead id="process-heading" title={homePage.process.heading} intro={homePage.process.intro} />
-        <ol className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          {homePage.process.steps.map((step) => (
-            <li key={step.title} className="site-card">
-              <h3 className="site-h3">{step.title}</h3>
-              <p className="site-small mt-2">{step.body}</p>
-            </li>
-          ))}
-        </ol>
-      </Section>
-
-      {posts.length > 0 ? (
-        <Section id="writing-heading">
-          <SectionHead
-            id="writing-heading"
-            title="Latest writing"
-            intro="Practical notes on building, shipping and maintaining web applications."
-            more={{ href: "/blog", label: "All posts" }}
-          />
-          <div className="grid gap-6 md:grid-cols-3">
-            {posts.map((post) => (
-              <PostCard key={post.id} post={post} />
-            ))}
-          </div>
-        </Section>
-      ) : null}
-
-      <section aria-labelledby="faq-heading" className="site-split">
-        <div>
-          <h2 id="faq-heading" className="site-h2">
-            {homePage.faq.heading}
-          </h2>
-          <p className="site-copy mt-3">
-            <span>
-              Something else on your mind?{" "}
-              <Link href="/contact" className="site-a">
-                Ask us directly
-              </Link>
-              .
-            </span>
-          </p>
-        </div>
-        <div className="site-copy">
-          {homePage.faq.items.map((item) => (
-            <div key={item.question}>
-              <h3 className="site-h3 text-base">{item.question}</h3>
-              <p className="site-small mt-2">{item.answer}</p>
+      <section className="bg-white">
+        <div className="cp-section flex flex-col gap-16">
+          {homePage.audiences.map((audience, index) => (
+            <div
+              key={audience.href}
+              className={`grid gap-8 md:grid-cols-2 md:items-center ${index % 2 === 1 ? "md:[&>*:first-child]:order-2" : ""}`}
+            >
+              <SectionReveal kind={index % 2 === 0 ? "left" : "right"}>
+                <div
+                  className="aspect-[4/3] rounded-3xl bg-gradient-to-br from-cp-navy via-cp-primary/60 to-cp-steel"
+                  aria-hidden
+                />
+              </SectionReveal>
+              <SectionReveal kind={index % 2 === 0 ? "right" : "left"} delay={0.08}>
+                <div>
+                  <SectionHeading eyebrow={audience.eyebrow} title={audience.title} lead={audience.body} />
+                  <PillLink href={audience.href} variant="primary" className="mt-6">
+                    {audience.cta}
+                  </PillLink>
+                </div>
+              </SectionReveal>
             </div>
           ))}
         </div>
       </section>
 
-      <section aria-labelledby="skills-heading" className="flex flex-col gap-4">
-        <h2 id="skills-heading" className="site-h2s">
-          Tools we use every day
-        </h2>
-        <ul className="site-chips">
-          {site.skills.map((skill) => (
-            <li key={skill}>{skill}</li>
-          ))}
-        </ul>
-        <p className="site-small max-w-2xl">
-          We follow the official{" "}
-          <a href="https://nextjs.org/docs" className="site-a">
-            Next.js documentation
-          </a>{" "}
-          and{" "}
-          <a href="https://laravel.com/docs" className="site-a">
-            Laravel documentation
-          </a>{" "}
-          closely and keep every project on supported versions.
-        </p>
+      <section className="bg-cp-paper">
+        <div className="cp-section grid gap-10 lg:grid-cols-[1fr_1.1fr] lg:items-center">
+          <div>
+            <SectionHeading
+              eyebrow={homePage.humanMiddle.eyebrow}
+              title={homePage.humanMiddle.heading}
+              lead={homePage.humanMiddle.lead}
+            />
+            <FeatureCardGrid className="mt-8" columns={2} items={homePage.humanMiddle.points} />
+          </div>
+          <SectionReveal kind="right">
+            <div className="rounded-3xl border border-cp-navy/10 bg-white p-6 shadow-sm">
+              <p className="text-xs font-semibold tracking-[0.16em] text-cp-primary uppercase">PPM thread</p>
+              <div className="mt-4 space-y-3">
+                <div className="rounded-2xl bg-cp-paper p-4 text-sm text-cp-navy/80">
+                  Club submitted a Claim on your profile.
+                </div>
+                <div className="ml-8 rounded-2xl bg-cp-primary/10 p-4 text-sm text-cp-ink">
+                  PPM: We will discuss options with you and your guardian.
+                </div>
+              </div>
+            </div>
+          </SectionReveal>
+        </div>
       </section>
 
-      <CtaSection heading={homePage.cta.heading} body={homePage.cta.body} />
+      <section className="bg-cp-ink text-white">
+        <div className="cp-section">
+          <SectionHeading light eyebrow={homePage.safety.eyebrow} title={homePage.safety.heading} />
+          <FeatureCardGrid
+            className="mt-10"
+            tone="dark"
+            items={homePage.safety.items.map((item, index) => ({
+              ...item,
+              icon: (["shield","userRound","video","messageSquare","calendar","briefcase"] as const)[index % 6],
+            }))}
+          />
+        </div>
+      </section>
+
+      <SectionReveal>
+        <section className="bg-cp-primary text-white">
+          <div className="cp-section flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+            <div className="max-w-2xl">
+              <h2 className="font-display text-3xl font-semibold tracking-tight md:text-4xl">{homePage.beta.title}</h2>
+              <p className="mt-3 text-base leading-7 text-white/80">{homePage.beta.lead}</p>
+            </div>
+            <PillLink href="/register" variant="light">
+              Register Interest
+            </PillLink>
+          </div>
+        </section>
+      </SectionReveal>
+
+      <section className="bg-cp-steel text-white">
+        <div className="cp-section grid gap-8 md:grid-cols-[auto_1fr] md:items-center">
+          <SectionReveal kind="scale">
+            <p className="font-display text-7xl font-semibold md:text-8xl">5%</p>
+          </SectionReveal>
+          <div>
+            <SectionHeading
+              light
+              eyebrow={homePage.impact.eyebrow}
+              title={homePage.impact.heading}
+              lead={homePage.impact.lead}
+            />
+            <Link href="/grassroots" className="mt-6 inline-flex text-sm font-semibold underline-offset-4 hover:underline">
+              Learn about Grassroots
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-cp-paper">
+        <div className="cp-section">
+          <SectionReveal>
+            <div className="rounded-3xl bg-cp-navy p-8 text-white md:p-12">
+              <p className="font-display text-2xl font-semibold text-balance md:text-3xl">
+                &ldquo;{homePage.testimonial.quote}&rdquo;
+              </p>
+              <p className="mt-4 text-sm text-white/70">{homePage.testimonial.attribution}</p>
+            </div>
+          </SectionReveal>
+        </div>
+      </section>
+
+      <section className="bg-white">
+        <div className="cp-section grid gap-10 lg:grid-cols-[0.8fr_1.2fr]">
+          <SectionHeading eyebrow="FAQ" title={homePage.faqHeading} />
+          <FaqAccordion items={homePage.faq} />
+        </div>
+      </section>
+
+      <MarketingHero
+        className="mt-0"
+        title={homePage.finalCta.title}
+        lead={homePage.finalCta.lead}
+        actions={
+          <>
+            <PillLink href="/register" variant="light">
+              Register Interest
+            </PillLink>
+            <PillLink href="/how-it-works" variant="outline">
+              How it works
+            </PillLink>
+          </>
+        }
+      />
     </main>
   )
 }

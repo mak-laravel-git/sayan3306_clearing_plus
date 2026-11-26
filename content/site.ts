@@ -1,6 +1,6 @@
 /**
- * Portfolio profile. This is demo copy; replace it with real details.
- * Projects and blog posts come from the API, not from this file.
+ * Clearing+ public marketing profile and navigation.
+ * Audience and legal copy live in content/pages/*; pricing in content/pricing.ts.
  */
 export type SiteProfile = {
   label: string
@@ -13,36 +13,21 @@ export type NavItem = {
 }
 
 export const site = {
-  name: "Next Template",
-  role: "Next.js and Laravel web studio" as string | undefined,
+  name: "Clearing+",
+  role: "Football recruitment clearing for released academy players" as string | undefined,
   summary:
-    "A small web studio building fast, accessible web apps with Next.js and Laravel, from first sketch to production support." as
-      | string
-      | undefined,
-  location: "Remote-first team" as string | undefined,
-  availability: "Taking on new projects for the next quarter.",
+    "A welfare-first football recruitment platform helping released academy players aged 16+ find their next chapter — with verified clubs, guardian safeguards, and a human placement manager on every claim." as
+    | string
+    | undefined,
+  location: "United Kingdom" as string | undefined,
+  availability: "Register interest to join the founding cohort.",
   about: [
-    "We design and build web applications for small teams that need software to remove friction from their day: dashboards that replace spreadsheets, booking systems that cut phone calls, and portals that make information easy to find.",
-    "Most of our work pairs a Next.js front end with a Laravel API. We care about the parts users never notice until they go wrong: fast first loads, clear errors, accessible controls and data that is never lost.",
+    "Clearing+ exists for the moment football says “not this time.” We give released academy players a controlled path to verified clubs — without exposing private contact details or documents.",
+    "Job+ is our related career pathway for non-football work in the UK. Players opt in from Clearing+; employers operate on Job+.",
   ] as readonly string[],
-  skills: [
-    "Next.js",
-    "React",
-    "TypeScript",
-    "Laravel",
-    "PHP",
-    "PostgreSQL",
-    "MySQL",
-    "Redis",
-    "Tailwind CSS",
-    "Accessibility",
-    "Technical SEO",
-  ] as readonly string[],
-  email: "hello@example.com" as string | undefined,
-  profiles: [
-    { label: "GitHub", href: "https://github.com/" },
-    { label: "LinkedIn", href: "https://www.linkedin.com/" },
-  ] as readonly SiteProfile[],
+  skills: [] as readonly string[],
+  email: "hello@clearingplus.maktechlaravel.cloud" as string | undefined,
+  profiles: [] as readonly SiteProfile[],
   resumeHref: undefined as string | undefined,
 }
 
@@ -51,17 +36,36 @@ export function siteDescription() {
 }
 
 export const primaryNav: readonly NavItem[] = [
+  { href: "/how-it-works", label: "How it Works" },
+  { href: "/players", label: "Players" },
+  { href: "/parents", label: "Parents" },
+  { href: "/clubs", label: "Clubs" },
+  { href: "/founding-clubs", label: "Founding Clubs" },
+  { href: "/grassroots", label: "Grassroots" },
   { href: "/about", label: "About" },
-  { href: "/services", label: "Services" },
-  { href: "/projects", label: "Projects" },
-  { href: "/blog", label: "Blog" },
-  { href: "/contact", label: "Contact" },
+]
+
+export const footerPlatformNav: readonly NavItem[] = [
+  { href: "/how-it-works", label: "How it Works" },
+  { href: "/players", label: "Players" },
+  { href: "/parents", label: "Parents" },
+  { href: "/clubs", label: "Clubs" },
+]
+
+export const footerProgrammesNav: readonly NavItem[] = [
+  { href: "/founding-clubs", label: "Founding Clubs" },
+  { href: "/grassroots", label: "Grassroots" },
+  { href: "/about", label: "About" },
 ]
 
 export const legalNav: readonly NavItem[] = [
-  { href: "/privacy-policy", label: "Privacy policy" },
-  { href: "/terms", label: "Terms of service" },
+  { href: "/privacy-policy", label: "Privacy Policy" },
+  { href: "/terms", label: "Terms of Use" },
 ]
+
+export function jobPlusUrl() {
+  return process.env.NEXT_PUBLIC_JOB_PLUS_URL || "https://jobplus.maktechlaravel.cloud"
+}
 
 export function hasContact() {
   return Boolean(site.email || site.resumeHref || site.profiles.length > 0)

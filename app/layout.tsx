@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Geist } from "next/font/google";
+import { Outfit, Source_Sans_3 } from "next/font/google";
 import { AnimationProvider } from "@/components/animations/providers/animation-provider";
 import { AppToaster } from "@/components/app-toaster";
 import { SectionErrorBoundary } from "@/components/site/section-error-boundary";
@@ -11,16 +11,21 @@ import { fetchPageSeo } from "@/lib/seo/public";
 
 import "./globals.css";
 
-const geistSans = Geist({
+const sourceSans = Source_Sans_3({
   variable: "--font-sans",
+  subsets: ["latin"],
+});
+
+const outfit = Outfit({
+  variable: "--font-display",
   subsets: ["latin"],
 });
 
 /** Browser chrome follows the light and dark backgrounds in globals.css. */
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-    { media: "(prefers-color-scheme: dark)", color: "#0a0a0a" },
+    { media: "(prefers-color-scheme: light)", color: "#F8F6F3" },
+    { media: "(prefers-color-scheme: dark)", color: "#0B2646" },
   ],
   colorScheme: "light dark",
 };
@@ -56,7 +61,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
     <html
       lang={home.identity.locale.replace("_", "-") || "en"}
       suppressHydrationWarning
-      className={`${geistSans.variable} h-full antialiased`}
+      className={`${sourceSans.variable} ${outfit.variable} h-full antialiased`}
     >
       <body className="flex min-h-svh flex-col">
         <ThemeProvider

@@ -1,75 +1,86 @@
 import type { Route } from "next"
 
+import { NewsletterJoin } from "@/components/site/marketing/newsletter-join"
 import { TransitionLink as Link } from "@/components/transitions/transition-link"
-import { legalNav, primaryNav, site } from "@/content/site"
-import { fetchSiteIdentity } from "@/lib/seo/public"
+import {
+  footerPlatformNav,
+  footerProgrammesNav,
+  legalNav,
+  site,
+} from "@/content/site"
 
-export async function SiteFooter() {
-  const identity = await fetchSiteIdentity()
+export function SiteFooter({ brandName = "Clearing+" }: { brandName?: string }) {
   const year = new Date().getFullYear()
 
   return (
-    <footer className="border-t border-border/70">
-      <div className="site-footer-grid">
+    <footer className="cp-footer mt-16">
+      <div className="mx-auto grid w-full max-w-7xl gap-10 px-4 py-14 md:px-6 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
         <div>
-          <p className="text-sm font-semibold">{identity.name}</p>
-          <p className="site-small mt-3 max-w-sm">
-            {site.summary} {site.location ? `${site.location}. ` : null}
-            {site.availability}
-          </p>
+          <p className="font-display text-lg font-semibold">{brandName}</p>
+          <p className="mt-3 max-w-sm text-sm leading-6 text-white/70">{site.summary}</p>
+          <NewsletterJoin />
         </div>
-        <nav aria-label="Site">
-          <p className="text-sm font-medium">Pages</p>
-          <ul className="mt-2">
+        <nav aria-label="Platform">
+          <p className="text-xs font-semibold tracking-[0.16em] text-white/50 uppercase">Platform</p>
+          <ul className="mt-3 space-y-2">
+            {footerPlatformNav.map((item) => (
+              <li key={item.href}>
+                <Link href={item.href as Route} className="text-sm text-white/80 hover:text-white">
+                  {item.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+        <nav aria-label="Programmes">
+          <p className="text-xs font-semibold tracking-[0.16em] text-white/50 uppercase">Programmes</p>
+          <ul className="mt-3 space-y-2">
+            {footerProgrammesNav.map((item) => (
+              <li key={item.href}>
+                <Link href={item.href as Route} className="text-sm text-white/80 hover:text-white">
+                  {item.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+        <nav aria-label="Company">
+          <p className="text-xs font-semibold tracking-[0.16em] text-white/50 uppercase">Company</p>
+          <ul className="mt-3 space-y-2">
             <li>
-              <Link href="/" className="site-foot">
-                Home
+              <Link href={"/about" as Route} className="text-sm text-white/80 hover:text-white">
+                About
               </Link>
             </li>
-            {primaryNav.map((item) => (
-              <li key={item.href}>
-                <Link href={item.href as Route} className="site-foot">
-                  {item.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </nav>
-        <nav aria-label="Legal">
-          <p className="text-sm font-medium">Legal</p>
-          <ul className="mt-2">
-            {legalNav.map((item) => (
-              <li key={item.href}>
-                <Link href={item.href as Route} className="site-foot">
-                  {item.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </nav>
-        <div>
-          <p className="text-sm font-medium">Elsewhere</p>
-          <ul className="mt-2">
             {site.email ? (
               <li>
-                <a href={`mailto:${site.email}`} className="site-foot">
-                  Email
+                <a href={`mailto:${site.email}`} className="text-sm text-white/80 hover:text-white">
+                  Contact
                 </a>
               </li>
             ) : null}
-            {site.profiles.map((profile) => (
-              <li key={profile.href}>
-                <a href={profile.href} className="site-foot" rel="me noopener" target="_blank">
-                  {profile.label}
-                </a>
+            {legalNav.map((item) => (
+              <li key={item.href}>
+                <Link href={item.href as Route} className="text-sm text-white/80 hover:text-white">
+                  {item.label}
+                </Link>
               </li>
             ))}
           </ul>
+        </nav>
+      </div>
+      <div className="mx-auto flex w-full max-w-7xl flex-col gap-3 border-t border-white/10 px-4 py-5 text-xs text-white/50 md:flex-row md:items-center md:justify-between md:px-6">
+        <p>
+          © {year} {brandName}. All rights reserved.
+        </p>
+        <div className="flex gap-4">
+          {legalNav.map((item) => (
+            <Link key={item.href} href={item.href as Route} className="hover:text-white">
+              {item.label}
+            </Link>
+          ))}
         </div>
       </div>
-      <p className="site-footer-note">
-        © {year} {identity.name}. All rights reserved.
-      </p>
     </footer>
   )
 }

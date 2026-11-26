@@ -10,14 +10,15 @@ import { siteStructuredData } from "@/lib/structured-data"
 /** Site-level schema (owner + WebSite) belongs to the public pages only, never to login or admin. */
 export default async function SiteLayout({ children }: { children: ReactNode }) {
   const home = await fetchPageSeo("/")
+  const brandName = home.identity.name || "Clearing+"
 
   return (
-    <div className="flex min-h-svh flex-1 flex-col bg-muted/30">
+    <div className="cp-marketing light flex min-h-svh flex-1 flex-col">
       <JsonLd data={siteStructuredData(home.identity, home.description)} />
       {home.identity.tracking_enabled ? <TrafficReporter /> : null}
-      <SiteHeader />
+      <SiteHeader brandName={brandName} />
       <div className="flex flex-1 flex-col">{children}</div>
-      <SiteFooter />
+      <SiteFooter brandName={brandName} />
     </div>
   )
 }

@@ -9,10 +9,16 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-sans);
+  --font-display: var(--font-display), var(--font-sans);
   --font-mono:
     ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
     "Courier New", monospace;
-  --font-heading: var(--font-sans);
+  --font-heading: var(--font-display);
+  --color-cp-primary: var(--cp-primary);
+  --color-cp-navy: var(--cp-navy);
+  --color-cp-ink: var(--cp-ink);
+  --color-cp-paper: var(--cp-paper);
+  --color-cp-steel: var(--cp-steel);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -127,27 +133,32 @@
 }
 
 :root {
-  --brand-cyan: #22d3ee;
-  --brand-indigo: #6366f1;
-  --brand-purple: #8b5cf6;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
+  --cp-primary: #3222c2;
+  --cp-navy: #0b2646;
+  --cp-ink: #0f1419;
+  --cp-paper: #f8f6f3;
+  --cp-steel: #457b9c;
+  --brand-cyan: #457b9c;
+  --brand-indigo: #3222c2;
+  --brand-purple: #3222c2;
+  --background: #ffffff;
+  --foreground: #0f1419;
+  --card: #ffffff;
+  --card-foreground: #0f1419;
+  --popover: #ffffff;
+  --popover-foreground: #0f1419;
+  --primary: #3222c2;
+  --primary-foreground: #ffffff;
+  --secondary: #f8f6f3;
+  --secondary-foreground: #0b2646;
+  --muted: #f8f6f3;
+  --muted-foreground: #457b9c;
+  --accent: #f8f6f3;
+  --accent-foreground: #0b2646;
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
+  --border: color-mix(in srgb, #0b2646 12%, transparent);
+  --input: color-mix(in srgb, #0b2646 14%, transparent);
+  --ring: #3222c2;
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -751,6 +762,57 @@ html[data-navigation-progress-active] .route-fallback__track {
   }
   .site-btn-outline {
     @apply border-border bg-background text-foreground hover:bg-muted dark:border-input dark:bg-input/30 dark:hover:bg-input/50;
+  }
+
+  /* Clearing+ marketing shell */
+  .cp-marketing {
+    @apply bg-cp-paper text-cp-ink;
+    font-family: var(--font-sans);
+  }
+  .cp-marketing h1,
+  .cp-marketing h2,
+  .cp-marketing h3,
+  .cp-marketing .font-display {
+    font-family: var(--font-display);
+  }
+  .cp-shell-header {
+    @apply sticky top-0 z-40 border-b border-cp-navy/10 bg-white/90 backdrop-blur-md;
+  }
+  .cp-shell-bar {
+    @apply mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-4 py-3 md:px-6;
+  }
+  .cp-nav-link {
+    @apply inline-flex min-h-10 items-center rounded-md px-2 text-sm font-medium text-cp-navy/80 outline-none transition-colors hover:text-cp-primary focus-visible:ring-2 focus-visible:ring-cp-primary/40;
+  }
+  .cp-nav-link[data-active="true"] {
+    @apply text-cp-primary;
+  }
+  .cp-pill {
+    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-full px-5 text-sm font-semibold whitespace-nowrap transition-all outline-none focus-visible:ring-2 focus-visible:ring-cp-primary/40 active:translate-y-px;
+  }
+  .cp-pill-primary {
+    @apply bg-cp-primary text-white shadow-[0_0_24px_color-mix(in_srgb,#3222C2_35%,transparent)] hover:bg-cp-primary/90;
+  }
+  .cp-pill-light {
+    @apply bg-white text-cp-navy hover:bg-white/90;
+  }
+  .cp-pill-outline {
+    @apply border border-white/70 bg-transparent text-white hover:bg-white/10;
+  }
+  .cp-pill-ghost {
+    @apply border border-cp-navy/20 bg-transparent text-cp-navy hover:bg-cp-navy/5;
+  }
+  .cp-section {
+    @apply mx-auto w-full max-w-7xl px-4 py-16 md:px-6 md:py-24;
+  }
+  .cp-eyebrow {
+    @apply text-xs font-semibold tracking-[0.18em] text-cp-primary uppercase;
+  }
+  .cp-card {
+    @apply rounded-2xl border border-cp-navy/8 bg-white p-6 shadow-sm;
+  }
+  .cp-footer {
+    @apply bg-cp-ink text-white;
   }
 }
 
