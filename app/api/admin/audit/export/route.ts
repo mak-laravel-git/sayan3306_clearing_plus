@@ -22,7 +22,7 @@ export async function GET(request: NextRequest) {
   if (!session?.accessToken) {
     return redirectTo(logoutUrl(AUDIT_PAGE));
   }
-  if (session.user.role !== "platform_admin") {
+  if (!session.user.permissions?.includes("application.audit.view")) {
     return redirectTo("/admin");
   }
 

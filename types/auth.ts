@@ -1,5 +1,10 @@
-/** The seven roles of the platform. A user works as one of them. */
+/**
+ * The roles of the platform. A user works as one of them. Platform staff are a
+ * super admin (settings, security, fees, other admins) or an admin (operations:
+ * clubs, people, audit). A club person is a club admin or a club user.
+ */
 export type UserRole =
+  | "platform_super_admin"
   | "platform_admin"
   | "ppm"
   | "player"
@@ -13,6 +18,15 @@ export type PortalKey = "admin" | "ppm" | "player" | "guardian" | "club" | "empl
 
 export type ThemePreference = "light" | "dark" | "system";
 
+/** The club a club person works for. Always the one of their own membership. */
+export type ClubSummary = {
+  code: string;
+  name: string;
+  status: "pre_registered" | "active" | "suspended";
+  role: "club_admin" | "club_user";
+  is_owner: boolean;
+};
+
 export type User = {
   id: string | number;
   name: string;
@@ -24,6 +38,8 @@ export type User = {
   /** What the role may do; used to show or hide menu items. The API decides on every call. */
   permissions: string[];
   portal: PortalKey | null;
+  /** The club of a club admin or club user; null for everybody else. */
+  club?: ClubSummary | null;
   requirements?: {
     two_factor_setup_needed: boolean;
     idle_minutes: number;

@@ -11,9 +11,10 @@ import {
   safeNextFor,
 } from "../../lib/auth/portals.ts";
 
-const ROLES = ["platform_admin", "ppm", "player", "guardian", "club_admin", "club_user", "employer"] as const;
+const ROLES = ["platform_super_admin", "platform_admin", "ppm", "player", "guardian", "club_admin", "club_user", "employer"] as const;
 
 const HOME: Record<(typeof ROLES)[number], string> = {
+  platform_super_admin: "/admin",
   platform_admin: "/admin",
   ppm: "/ppm",
   player: "/player",

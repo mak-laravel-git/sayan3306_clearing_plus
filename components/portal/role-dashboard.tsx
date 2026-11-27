@@ -25,6 +25,7 @@ export function RoleDashboard({
   intro,
   sections,
   aside,
+  top,
 }: {
   user: User;
   eyebrow: string;
@@ -32,6 +33,8 @@ export function RoleDashboard({
   intro: string;
   sections: DashboardSection[];
   aside?: ReactNode;
+  /** Role-specific content shown right under the heading (for a club: who it is and its credits). */
+  top?: ReactNode;
 }) {
   const verified = Boolean(user.email_verified_at);
 
@@ -44,6 +47,8 @@ export function RoleDashboard({
         <h1 className="font-heading text-3xl font-semibold tracking-tight">{title}</h1>
         <p className="max-w-2xl text-sm text-muted-foreground">{intro}</p>
       </header>
+
+      {top}
 
       <div className="grid gap-4 sm:grid-cols-3">
         <StatusTile icon={ShieldCheck} label="Signed in as" value={user.name} hint={user.email} />

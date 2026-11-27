@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import { SeoJsonLd } from "@/components/seo/json-ld"
 import { FaqAccordion } from "@/components/site/marketing/faq-accordion"
 import { FeatureCardGrid } from "@/components/site/marketing/feature-card-grid"
+import { FoundingCounter } from "@/components/site/marketing/founding-counter"
 import { MarketingHero } from "@/components/site/marketing/marketing-hero"
 import { PillLink } from "@/components/site/marketing/pill-link"
 import { SectionHeading } from "@/components/site/marketing/section-heading"
@@ -45,6 +46,8 @@ export default async function Home() {
           <p className="mt-4 text-sm text-white/70">Verified · Consent gated · PPM mediated</p>
         </div>
       </MarketingHero>
+
+      <FoundingCounter className="border-b border-cp-navy/10 bg-white" />
 
       <section className="bg-cp-paper">
         <div className="cp-section">

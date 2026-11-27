@@ -1,6 +1,8 @@
 import {
   Activity,
   BarChart3,
+  Building2,
+  Contact,
   Database,
   FileSearch,
   Handshake,
@@ -19,6 +21,7 @@ import {
   SlidersHorizontal,
   UserRound,
   Users,
+  UsersRound,
 } from "lucide-react";
 
 import { modules } from "@/lib/modules";
@@ -50,6 +53,16 @@ const adminGroups: { label: string; items: Item[] }[] = [
     items: [
       { title: "Dashboard", href: "/admin", icon: LayoutDashboard },
       { title: "Users & roles", href: "/admin/users", icon: Users, permission: "users.view" },
+      {
+        title: "Clubs",
+        href: "/admin/clubs",
+        icon: Building2,
+        permission: "clubs.view",
+        children: [
+          { title: "All clubs", href: "/admin/clubs", icon: Building2 },
+          { title: "Club settings", href: "/admin/clubs/settings", icon: Settings2, permission: "clubs.settings.manage" },
+        ],
+      },
       { title: "Realtime", href: "/admin/realtime", icon: Radio, enabled: modules.realtime, permission: "realtime.diagnose" },
       { title: "Media", href: "/admin/media", icon: Images, enabled: modules.media, permission: "media.manage" },
     ],
@@ -87,6 +100,8 @@ const simpleGroups: Record<Exclude<PortalKey, "admin">, { label: string; items: 
       label: "Workspace",
       items: [
         { title: "Dashboard", href: "/club", icon: LayoutDashboard },
+        { title: "Team", href: "/club/team", icon: UsersRound },
+        { title: "Contact details", href: "/club/profile", icon: Contact },
         { title: "Player search", href: "/club", icon: FileSearch, enabled: false },
         { title: "Claims", href: "/club", icon: Handshake, enabled: false },
       ],

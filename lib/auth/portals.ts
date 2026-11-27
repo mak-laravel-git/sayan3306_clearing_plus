@@ -18,7 +18,7 @@ export type Portal = {
 };
 
 export const PORTALS: Record<PortalKey, Portal> = {
-  admin: { key: "admin", prefix: "/admin", home: "/admin", label: "Platform admin", roles: ["platform_admin"] },
+  admin: { key: "admin", prefix: "/admin", home: "/admin", label: "Platform admin", roles: ["platform_super_admin", "platform_admin"] },
   ppm: { key: "ppm", prefix: "/ppm", home: "/ppm", label: "Placement manager", roles: ["ppm"] },
   player: { key: "player", prefix: "/player", home: "/player", label: "Player", roles: ["player"] },
   guardian: { key: "guardian", prefix: "/guardian", home: "/guardian", label: "Guardian", roles: ["guardian"] },
@@ -32,6 +32,7 @@ export const ACCOUNT_PREFIX = "/account";
 export const ACCOUNT_HOME = "/account/profile";
 
 const ROLE_PORTAL: Record<UserRole, PortalKey> = {
+  platform_super_admin: "admin",
   platform_admin: "admin",
   ppm: "ppm",
   player: "player",

@@ -37,7 +37,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import type { ManagedUser, UserList } from "@/lib/admin/users";
 import type { UserRole } from "@/types/auth";
 
-const ROLES: { value: UserRole; label: string }[] = [
+/** Every role, for the filter and for showing what a person is. */
+const ALL_ROLES: { value: UserRole; label: string }[] = [
+  { value: "platform_super_admin", label: "Platform super admin" },
   { value: "platform_admin", label: "Platform admin" },
   { value: "ppm", label: "Player placement manager" },
   { value: "player", label: "Player" },
@@ -47,10 +49,16 @@ const ROLES: { value: UserRole; label: string }[] = [
   { value: "employer", label: "Employer" },
 ];
 
+/** What can be chosen when creating an account or changing a role: a club person comes only with a club (invited from it). */
+const ROLES = ALL_ROLES.filter((role) => role.value !== "club_admin" && role.value !== "club_user");
+
+const PLATFORM_STAFF: readonly UserRole[] = ["platform_super_admin", "platform_admin"];
+const CLUB_ROLES: readonly UserRole[] = ["club_admin", "club_user"];
+
 const ANY = "all";
 
 function roleLabel(role: string | null): string {
-  return ROLES.find((item) => item.value === role)?.label ?? "No role";
+  return ALL_ROLES.find((item) => item.value === role)?.label ?? "No role";
 }
 
 function StatusBadge({ status }: { status: ManagedUser["status"] }) {
@@ -139,7 +147,7 @@ export function UsersScreen({
           </SelectTrigger>
           <SelectContent>
             <SelectItem value={ANY}>All roles</SelectItem>
-            {ROLES.map((role) => (
+            {ALL_ROLES.map((role) => (
               <SelectItem key={role.value} value={role.value}>
                 {role.label}
               </SelectItem>
@@ -172,7 +180,8 @@ export function UsersScreen({
             ) : null}
             {list.users.map((user) => {
               const mine = String(user.id) === meId;
-              const isAdmin = user.role === "platform_admin";
+              const isAdmin = user.role !== null && PLATFORM_STAFF.includes(user.role);
+              const isClubPerson = user.role !== null && CLUB_ROLES.includes(user.role);
               const alsoPpm = user.roles.includes("ppm") && isAdmin;
 
               return (
@@ -200,7 +209,7 @@ export function UsersScreen({
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                          {canAssign && !mine ? (
+                          {canAssign && !mine && !isClubPerson ? (
                             <DropdownMenuItem onSelect={() => setDialog({ kind: "role", user })}>Change role…</DropdownMenuItem>
                           ) : null}
                           {canAssign && isAdmin ? (

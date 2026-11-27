@@ -4,7 +4,6 @@ import { SeoJsonLd } from "@/components/seo/json-ld"
 import { Breadcrumbs } from "@/components/site/breadcrumbs"
 import { CtaSection } from "@/components/site/cta-section"
 import { RouteReady } from "@/components/transitions/route-ready"
-import { TransitionLink as Link } from "@/components/transitions/transition-link"
 import { services, servicesFaq, servicesPage } from "@/content/pages/services"
 import { toMetadata } from "@/lib/seo/metadata"
 import { fetchPageSeo } from "@/lib/seo/public"
@@ -55,11 +54,7 @@ export default async function ServicesPage() {
           </h2>
           <p className="site-copy mt-3">
             <span>
-              Pick the format that matches where your product is today. You can switch later; many clients start with an audit and continue with a project. See the results of past engagements in the{" "}
-              <Link href="/projects" className="site-a">
-                project case studies
-              </Link>
-              .
+              Pick the format that matches where your product is today. You can switch later; many clients start with an audit and continue with a project.
             </span>
           </p>
         </div>

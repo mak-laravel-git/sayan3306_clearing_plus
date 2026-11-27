@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import { SeoJsonLd } from "@/components/seo/json-ld"
 import { FeatureCardGrid } from "@/components/site/marketing/feature-card-grid"
 import { FoundingClubsForm } from "@/components/site/marketing/founding-clubs-form"
+import { FoundingCounter } from "@/components/site/marketing/founding-counter"
 import { MarketingHero } from "@/components/site/marketing/marketing-hero"
 import { SectionHeading } from "@/components/site/marketing/section-heading"
 import { SectionReveal } from "@/components/site/marketing/section-reveal"
@@ -28,6 +29,7 @@ export default async function FoundingClubsPage() {
         title={foundingClubsPage.heading}
         lead={foundingClubsPage.lead}
       />
+      <FoundingCounter className="border-b border-cp-navy/10 bg-white" />
       <section className="bg-cp-paper">
         <div className="cp-section">
           <SectionHeading eyebrow="Benefits" title={foundingClubsPage.benefitsHeading} />

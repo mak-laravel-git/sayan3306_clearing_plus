@@ -87,10 +87,6 @@ export default async function ContactPage() {
           Before you write, you might want to look at the{" "}
           <Link href="/services" className="site-a">
             services we offer
-          </Link>{" "}
-          or a few{" "}
-          <Link href="/projects" className="site-a">
-            recent projects
           </Link>
           . Your message is handled as described in the{" "}
           <Link href="/privacy-policy" className="site-a">

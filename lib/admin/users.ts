@@ -10,13 +10,15 @@ export type UserList = {
   meta: { current_page: number; per_page: number; total: number; last_page: number };
 };
 
+/** The roles an admin may give from the users screen. A club person is invited from their club, never created here. */
 export const ROLE_OPTIONS: { value: UserRole; label: string }[] = [
+  { value: "platform_super_admin", label: "Platform super admin" },
   { value: "platform_admin", label: "Platform admin" },
   { value: "ppm", label: "Player placement manager" },
   { value: "player", label: "Player" },
   { value: "guardian", label: "Guardian" },
-  { value: "club_admin", label: "Club admin" },
-  { value: "club_user", label: "Club user" },
+
+
   { value: "employer", label: "Employer" },
 ];
 

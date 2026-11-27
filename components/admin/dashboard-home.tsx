@@ -121,7 +121,7 @@ export function DashboardHome({ user, stats }: { user: User | undefined; stats: 
         ))}
       </div>
 
-      {user?.role === "platform_admin" ? (
+      {(user?.role === "platform_super_admin" || user?.role === "platform_admin") ? (
         <AdminDashboardCharts audit={stats.audit} media={stats.media} />
       ) : (
         <PersonalDashboardChart stats={stats.personal} />
