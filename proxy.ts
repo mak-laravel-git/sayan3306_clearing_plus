@@ -43,8 +43,9 @@ export async function proxy(request: NextRequest, event: NextFetchEvent) {
     event.waitUntil(reportBotHit(request));
   }
 
+  // Behind a proxy `nextUrl.origin` is the server's own bind address (localhost:3000), so the configured public URL comes first.
   const origin =
-    request.headers.get("origin") ?? request.nextUrl.origin;
+    request.headers.get("origin") ?? process.env.NEXT_PUBLIC_SITE_URL ?? request.nextUrl.origin;
 
   return runWithFrontendOrigin(origin, () => handleProxy(request));
 }
@@ -79,6 +80,8 @@ async function handleProxy(request: NextRequest) {
   }
 
   if (isProtected && !authenticated) {
+    // Proxy redirects take an absolute URL; Next itself turns it into a relative
+    // Location before it leaves the server (unlike Route Handlers, see lib/http/redirect.ts).
     const loginUrl = request.nextUrl.clone();
     loginUrl.pathname = "/login";
     loginUrl.search = "";

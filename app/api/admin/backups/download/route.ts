@@ -1,10 +1,10 @@
 import { Readable } from "node:stream";
 
 import type { NextRequest } from "next/server";
-import { NextResponse } from "next/server";
 
 import { getSession } from "@/lib/auth/auth-cookies";
 import { laravelHttp } from "@/lib/auth/http";
+import { redirectTo } from "@/lib/http/redirect";
 import { logoutUrl } from "@/lib/auth/session-expired";
 
 export const dynamic = "force-dynamic";
@@ -19,12 +19,12 @@ const BACKUP_PAGE = "/admin/application/backup";
 export async function GET(request: NextRequest) {
   const token = request.nextUrl.searchParams.get("token") ?? "";
   if (!/^[A-Za-z0-9]{64}$/.test(token)) {
-    return backToPage(request, "This download link is not valid.");
+    return backToPage("This download link is not valid.");
   }
 
   const session = await getSession();
   if (!session?.accessToken) {
-    return NextResponse.redirect(new URL(logoutUrl(BACKUP_PAGE), request.url));
+    return redirectTo(logoutUrl(BACKUP_PAGE));
   }
 
   let upstream;
@@ -40,17 +40,17 @@ export async function GET(request: NextRequest) {
       signal: request.signal,
     });
   } catch {
-    return backToPage(request, "The backup service is unavailable.");
+    return backToPage("The backup service is unavailable.");
   }
 
   if (upstream.status === 401) {
     upstream.data.destroy();
-    return NextResponse.redirect(new URL(logoutUrl(BACKUP_PAGE), request.url));
+    return redirectTo(logoutUrl(BACKUP_PAGE));
   }
 
   if (upstream.status !== 200) {
     upstream.data.destroy();
-    return backToPage(request, "This download link has expired. Try again.");
+    return backToPage("This download link has expired. Try again.");
   }
 
   const headers = new Headers({
@@ -69,8 +69,6 @@ export async function GET(request: NextRequest) {
   });
 }
 
-function backToPage(request: NextRequest, message: string) {
-  const url = new URL(BACKUP_PAGE, request.url);
-  url.searchParams.set("download_error", message);
-  return NextResponse.redirect(url, 303);
+function backToPage(message: string) {
+  return redirectTo(`${BACKUP_PAGE}?${new URLSearchParams({ download_error: message }).toString()}`, 303);
 }

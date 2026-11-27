@@ -1,8 +1,8 @@
-import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 import { revokeLaravelToken } from "@/lib/auth/api";
 import { deleteSession, getSession } from "@/lib/auth/auth-cookies";
+import { redirectTo } from "@/lib/http/redirect";
 import { safeRedirectPath } from "@/lib/auth/redirect";
 import { SESSION_COOKIE } from "@/lib/auth/session";
 import { SESSION_EXPIRED_REASON } from "@/lib/auth/session-expired";
@@ -33,19 +33,20 @@ export async function GET(request: NextRequest) {
     await deleteSession();
   }
 
-  const loginUrl = request.nextUrl.clone();
-  loginUrl.pathname = "/login";
-  loginUrl.search = "";
+  // A relative Location: `request.nextUrl` carries the server's own bind
+  // address (localhost:3000) behind a proxy, never the public domain.
+  const params = new URLSearchParams();
   const next = request.nextUrl.searchParams.get("next");
   const reason = request.nextUrl.searchParams.get("reason");
   const safeNext = next ? safeRedirectPath(next, "") : "";
 
-  if (safeNext) loginUrl.searchParams.set("next", safeNext);
+  if (safeNext) params.set("next", safeNext);
   if (reason === SESSION_EXPIRED_REASON) {
-    loginUrl.searchParams.set("reason", SESSION_EXPIRED_REASON);
+    params.set("reason", SESSION_EXPIRED_REASON);
   }
 
-  const response = NextResponse.redirect(loginUrl);
+  const query = params.toString();
+  const response = redirectTo(query ? `/login?${query}` : "/login");
   if (!crossSite) response.cookies.delete(SESSION_COOKIE);
   return response;
 }

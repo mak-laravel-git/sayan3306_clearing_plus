@@ -4,6 +4,7 @@ import { NextResponse } from "next/server";
 import { scopeToSite } from "@/lib/admin/site";
 import { getSession } from "@/lib/auth/auth-cookies";
 import { laravelHttp } from "@/lib/auth/http";
+import { redirectTo } from "@/lib/http/redirect";
 import { logoutUrl } from "@/lib/auth/session-expired";
 
 export const dynamic = "force-dynamic";
@@ -20,7 +21,7 @@ export async function GET(request: NextRequest, ctx: RouteContext<"/api/admin/se
 
   const session = await getSession();
   if (!session?.accessToken) {
-    return NextResponse.redirect(new URL(logoutUrl(SEO_PAGE), request.url));
+    return redirectTo(logoutUrl(SEO_PAGE));
   }
 
   let upstream;
@@ -36,7 +37,7 @@ export async function GET(request: NextRequest, ctx: RouteContext<"/api/admin/se
   }
 
   if (upstream.status === 401) {
-    return NextResponse.redirect(new URL(logoutUrl(SEO_PAGE), request.url));
+    return redirectTo(logoutUrl(SEO_PAGE));
   }
 
   if (upstream.status !== 200) {

@@ -23,7 +23,8 @@ export async function GET() {
       return NextResponse.json({ message: "Unauthenticated" }, { status: 401 });
     }
 
-    // Fall back to the cookie-cached user if Laravel is temporarily unreachable.
-    return NextResponse.json({ user: session.user });
+    // The API could not answer. Do not vouch for the cookie's old copy of the user:
+    // a token the API has already ended would then look signed in. Say "unknown" instead.
+    return NextResponse.json({ message: "The session could not be checked." }, { status: 503 });
   }
 }

@@ -1,11 +1,11 @@
 import { Readable } from "node:stream";
 
 import type { NextRequest } from "next/server";
-import { NextResponse } from "next/server";
 
 import { toAuditQuery } from "@/lib/admin/audit";
 import { getSession } from "@/lib/auth/auth-cookies";
 import { laravelHttp } from "@/lib/auth/http";
+import { redirectTo } from "@/lib/http/redirect";
 import { logoutUrl } from "@/lib/auth/session-expired";
 
 export const dynamic = "force-dynamic";
@@ -20,10 +20,10 @@ const AUDIT_PAGE = "/admin/application/audit";
 export async function GET(request: NextRequest) {
   const session = await getSession();
   if (!session?.accessToken) {
-    return NextResponse.redirect(new URL(logoutUrl(AUDIT_PAGE), request.url));
+    return redirectTo(logoutUrl(AUDIT_PAGE));
   }
   if (session.user.role !== "platform_admin") {
-    return NextResponse.redirect(new URL("/admin", request.url));
+    return redirectTo("/admin");
   }
 
   const query = toAuditQuery(request.nextUrl.searchParams, { paginate: false });
@@ -44,7 +44,7 @@ export async function GET(request: NextRequest) {
 
   if (upstream.status === 401) {
     upstream.data.destroy();
-    return NextResponse.redirect(new URL(logoutUrl(AUDIT_PAGE), request.url));
+    return redirectTo(logoutUrl(AUDIT_PAGE));
   }
 
   if (upstream.status === 429) {
@@ -75,8 +75,7 @@ export async function GET(request: NextRequest) {
 }
 
 function backToPage(request: NextRequest, message: string) {
-  const url = new URL(AUDIT_PAGE, request.url);
-  request.nextUrl.searchParams.forEach((value, key) => url.searchParams.set(key, value));
-  url.searchParams.set("export_error", message);
-  return NextResponse.redirect(url, 303);
+  const params = new URLSearchParams(request.nextUrl.searchParams);
+  params.set("export_error", message);
+  return redirectTo(`${AUDIT_PAGE}?${params.toString()}`, 303);
 }

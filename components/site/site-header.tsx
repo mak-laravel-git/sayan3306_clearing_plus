@@ -7,6 +7,11 @@ import { usePathname } from "next/navigation"
 import { useState } from "react"
 
 import { BrandLogo } from "@/components/site/brand-logo"
+import { SiteHeaderAccount } from "@/components/site/site-header-account"
+import { logoutAction } from "@/lib/actions/logout"
+import { homeFor } from "@/lib/auth/portals"
+import { useViewer } from "@/lib/auth/viewer-store"
+import type { UserRole } from "@/types/auth"
 import { PillLink } from "@/components/site/marketing/pill-link"
 import { TransitionLink as Link } from "@/components/transitions/transition-link"
 import { Button } from "@/components/ui/button"
@@ -25,6 +30,7 @@ export function SiteHeader({ brandName = "Clearing+" }: { brandName?: string }) 
   const jobPlus = jobPlusUrl()
   const [open, setOpen] = useState(false)
   const reduce = useReducedMotion()
+  const viewer = useViewer()
 
   return (
     <m.header
@@ -85,27 +91,36 @@ export function SiteHeader({ brandName = "Clearing+" }: { brandName?: string }) 
             <ArrowUpRight className="size-3.5 opacity-70" aria-hidden />
           </m.a>
 
-          <Button
-            asChild
-            variant="ghost"
-            className="hidden min-h-10 rounded-full px-3 text-sm font-medium text-cp-navy hover:bg-cp-paper hover:text-cp-primary sm:inline-flex"
-          >
-            <Link href={"/login" as Route}>Log in</Link>
-          </Button>
+          {viewer.status === "user" ? (
+            <SiteHeaderAccount user={viewer.user} onLogout={logoutAction} />
+          ) : viewer.status === "loading" ? (
+            // Reserve the room so the bar does not jump once we know who is here.
+            <span aria-hidden className="hidden size-10 sm:inline-flex" />
+          ) : (
+            <>
+              <Button
+                asChild
+                variant="ghost"
+                className="hidden min-h-10 rounded-full px-3 text-sm font-medium text-cp-navy hover:bg-cp-paper hover:text-cp-primary sm:inline-flex"
+              >
+                <Link href={"/login" as Route}>Log in</Link>
+              </Button>
 
-          <m.div
-            className="hidden sm:block"
-            whileHover={reduce ? undefined : { scale: 1.02 }}
-            transition={{ type: "spring", stiffness: 380, damping: 22 }}
-          >
-            <PillLink
-              href="/register"
-              variant="primary"
-              className="min-h-10 px-4 text-xs shadow-[0_8px_28px_rgba(50,34,194,0.45)]"
-            >
-              Register Interest
-            </PillLink>
-          </m.div>
+              <m.div
+                className="hidden sm:block"
+                whileHover={reduce ? undefined : { scale: 1.02 }}
+                transition={{ type: "spring", stiffness: 380, damping: 22 }}
+              >
+                <PillLink
+                  href="/register"
+                  variant="primary"
+                  className="min-h-10 px-4 text-xs shadow-[0_8px_28px_rgba(50,34,194,0.45)]"
+                >
+                  Register Interest
+                </PillLink>
+              </m.div>
+            </>
+          )}
 
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild>
@@ -142,18 +157,39 @@ export function SiteHeader({ brandName = "Clearing+" }: { brandName?: string }) 
                   Job+
                   <ArrowUpRight className="size-3.5" aria-hidden />
                 </a>
-                <Link
-                  href={"/login" as Route}
-                  className="rounded-lg px-3 py-2.5 text-sm font-medium text-cp-navy"
-                  onClick={() => setOpen(false)}
-                >
-                  Log in
-                </Link>
-                <div className="pt-3" onClick={() => setOpen(false)}>
-                  <PillLink href="/register" variant="primary" className="w-full text-xs">
-                    Register Interest
-                  </PillLink>
-                </div>
+                {viewer.status === "user" ? (
+                  <>
+                    <Link
+                      href={homeFor({ role: (viewer.user.role as UserRole | null | undefined) ?? null }) as Route}
+                      className="rounded-lg px-3 py-2.5 text-sm font-medium text-cp-navy"
+                      onClick={() => setOpen(false)}
+                    >
+                      Dashboard
+                    </Link>
+                    <Link
+                      href={"/account/profile" as Route}
+                      className="rounded-lg px-3 py-2.5 text-sm font-medium text-cp-navy"
+                      onClick={() => setOpen(false)}
+                    >
+                      Profile
+                    </Link>
+                  </>
+                ) : viewer.status === "guest" ? (
+                  <>
+                    <Link
+                      href={"/login" as Route}
+                      className="rounded-lg px-3 py-2.5 text-sm font-medium text-cp-navy"
+                      onClick={() => setOpen(false)}
+                    >
+                      Log in
+                    </Link>
+                    <div className="pt-3" onClick={() => setOpen(false)}>
+                      <PillLink href="/register" variant="primary" className="w-full text-xs">
+                        Register Interest
+                      </PillLink>
+                    </div>
+                  </>
+                ) : null}
               </nav>
             </SheetContent>
           </Sheet>
